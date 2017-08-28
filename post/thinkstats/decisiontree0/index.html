@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MachineLearning,Stats,DecisionTrees," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="关于决策树 决策树是非常流行的一种机器学习算法，基于决策树的集成算法随机森林更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：">
+<meta name="keywords" content="MachineLearning,Stats,DecisionTrees">
+<meta property="og:type" content="article">
+<meta property="og:title" content="决策树系列0:你需要一棵决策树">
+<meta property="og:url" content="http://fangs.in/post/thinkstats/decisiontree0/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="关于决策树 决策树是非常流行的一种机器学习算法，基于决策树的集成算法随机森林更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/decisiontree0/DT_algorithm.png">
+<meta property="og:image" content="http://fangs.in/images/decisiontree0/决策树结构图.png">
+<meta property="og:image" content="http://fangs.in/images/decisiontree0/tree-space.png">
+<meta property="og:image" content="http://fangs.in/images/decisiontree0/prune.png">
+<meta property="og:updated_time" content="2017-08-28T03:11:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="决策树系列0:你需要一棵决策树">
+<meta name="twitter:description" content="关于决策树 决策树是非常流行的一种机器学习算法，基于决策树的集成算法随机森林更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：">
+<meta name="twitter:image" content="http://fangs.in/images/decisiontree0/DT_algorithm.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/thinkstats/decisiontree0/"/>
+
+
+
+
+
+  <title>决策树系列0:你需要一棵决策树 | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/thinkstats/decisiontree0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">决策树系列0:你需要一棵决策树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T22:11:00+08:00">
+                2017-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thinkstats/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkstats</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/thinkstats/decisiontree0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/thinkstats/decisiontree0/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="关于决策树">关于决策树</h4>
+<p>决策树是非常流行的一种机器学习算法，基于决策树的集成算法<strong>随机森林</strong>更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：</p>
+<a id="more"></a>
+<div class="figure">
+<img src="../../../images/decisiontree0/DT_algorithm.png">
+
+</div>
+<h4 id="相关概念">相关概念</h4>
+<div class="figure">
+<img src="../../../images/decisiontree0/决策树结构图.png">
+
+</div>
+<p>决策树的概念来自自然界中的树，树有分支、叶子、根和树干；决策树的节点根据选定的属性进行分裂，形成分支，这些分支上的节点是上一层节点的子节点，如果某节点不存在子节点（即不再向下延伸），那么这个节点就是叶子节点。每个决策树都有一个根节点（root），和树的跟一样，这是一棵决策树开始生长的起点。</p>
+<h4 id="种一棵决策树">种一棵决策树</h4>
+<p>决策树的生长意味着对数据空间的不断分割，每个叶子节点都对应于空间中的某一部分，将所有叶子节点对应的空间相加就是原来的数据空间，以二维数据空间为例，<span class="math inline">\(X\in \mathbf{X}\)</span>，有 <span class="math inline">\(X_1, X_2\)</span> 两个特征，每一次我们都选择其中一个特征进行分割，这个过程我们可以用下图形象地表示出来：</p>
+<div class="figure">
+<img src="../../../images/decisiontree0/tree-space.png">
+
+</div>
+<p>上图中叶子节点是 <span class="math inline">\(X_3,X_5,X_6,X_7,X_8\)</span> ，这些叶子节点对应的子空间之和即为原始数据空间。在二维空间里似乎几何分割更加直观，但是我们几乎不可能画出更高维空间的分割方法，对于决策树来说，高维空间和低维空间的分割的过程大同小异，无非是再增添一些节点，让树生长的更为茂盛罢了。</p>
+<p>构造一颗决策树需要解决四个问题：</p>
+<ol style="list-style-type: decimal">
+<li>选择什么特征进行分裂？如何给定分裂的临界值？</li>
+<li>如何评估分类的效果？</li>
+<li>分裂到什么时候停止？</li>
+<li>每个叶子节点都有一个对应的分类结果，怎么给？</li>
+</ol>
+<p>我们来看看这些问题该如何解决：</p>
+<ul>
+<li>选择分裂特征和分裂值</li>
+</ul>
+<p>假设我们输入的的数据 <span class="math inline">\(\mathbf{x}=[x_1,x_2…x_n]^T\)</span> ，其中既有连续变量又有离散变量，以 CART 树为例，对于连续变量 <span class="math inline">\(x_i\)</span>，我们会选定一个判定值 <span class="math inline">\(c\)</span>，当 <span class="math inline">\(x_i^{(j)}\leqslant c\)</span> 时，该样本进入左边的子节点，否则进入右边的子节点（CART 树做二元分类），连续变量的取值虽然是无穷的，但是训练的数据是有限的，如果训练集的数量是 <span class="math inline">\(m\)</span>，那么临界值 <span class="math inline">\(c\)</span> 最多只有 <span class="math inline">\(m\)</span> 种选择（考虑所有样本不能落入同一个子节点的话就是 <span class="math inline">\(m-1\)</span> 种），其中一种处理思路是，依次取 <span class="math inline">\(c\in \{x_i^{(1)}, x_i^{(2)}, x_i^{(3)}...x_i^{(m)}\}\)</span> ，选择分类效果最好的一种作为当前节点的分裂值。</p>
+<p>对于离散变量 <span class="math inline">\(x_j\)</span>，它的取值范围必然是有限的，假设共有 M 个不同的类别，进行分裂时，我们会给定一个 子集<span class="math inline">\(A\subset \{1,2,3…M\}\)</span> ，如果 <span class="math inline">\(x_j^{(i)}\in c\)</span> 进入左边的子节点，反之进入右边的子节点，同样我们会遍历所有子集 <span class="math inline">\(A\)</span>，并从中选择效果最好的一个作为分裂值 。</p>
+<p>通过上面的过程，我们完成了当前节点其中一个特征作为分裂变量的评估，并确定了该特征对应的最佳分裂点，最终我们还需要对所有属性的最佳分裂点进行评估，从中选出其中效果最好的属性作为分裂变量，该属性的分裂值即为当前节点的最佳分裂值。用伪代码的形式表达这个流程：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">初始化 当前最佳分类效果，当前最佳分裂特征和当前最佳分裂值;</div><div class="line"></div><div class="line"><span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; 特征数量; ++i)&#123;</div><div class="line">  选择待评估的特征 x_i;</div><div class="line">  <span class="keyword">if</span> (x_i 是连续变量)&#123;</div><div class="line">    找出最佳分裂值 c;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span>&#123;</div><div class="line">    找出最佳分裂集合 A;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (E_i &gt; 当前最佳分类效果)&#123;</div><div class="line">    当前最佳分类效果 = E_i;</div><div class="line">    当前最佳分裂特征 = x_i;</div><div class="line">    当前最佳分裂值 = c 或 A；</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>评估分裂效果</li>
+</ul>
+<p>我们需要一个能定量评估分类效果的函数 <span class="math inline">\(\phi\)</span> ，通常把它叫做不纯度函数(Impurity Function)，顾名思义，一个节点中样本类型越多不纯度越高。我们的目的是要获得尽可能小的不纯度，即每一次分裂都让不纯度降低。假设数据总共有 <span class="math inline">\(K\)</span> 个类型，对于当前节点 <span class="math inline">\(t\)</span> ，类型为 <span class="math inline">\(k\)</span> 的数据所占比例为 <span class="math inline">\(p(k|t)\)</span> ，容易推得 <span class="math inline">\(\sum_{k=1}^Kp(k|t)=1\)</span>。</p>
+<p>不纯度函数可以有很多选择，但都必须遵循以下原则：</p>
+<ol style="list-style-type: decimal">
+<li>节点中各类型的数据均匀分布时，不纯度最高，即 <span class="math inline">\(p(k|t)=1/K,(k=1,2…K)\)</span> 时，<span class="math inline">\(\phi\)</span> 达到最大；</li>
+<li>节点中只有一种类型的数据时，不纯度最低，即 <span class="math inline">\(p(k|t)=1,p(i|t)=0,(i=0,1…k-1,k+1…K)\)</span> 时，<span class="math inline">\(\phi\)</span> 达到最小；</li>
+<li><span class="math inline">\(\phi\)</span> 对于 <span class="math inline">\(p\)</span> 是对称的，即任意对调 <span class="math inline">\(p(i|t)\)</span> 和 <span class="math inline">\(p(j|t)\)</span> 的值，<span class="math inline">\(\phi\)</span> 不变；</li>
+</ol>
+<p>给定不纯度函数 <span class="math inline">\(\phi\)</span> 后，我们用 <span class="math inline">\(i(t)\)</span> 来表示节点 <span class="math inline">\(t\)</span> 的不纯度： <span class="math display">\[
+i(t)=\phi(p(1|t), p(2|t)...p(K|t))
+\]</span> 有了节点的不纯度之后，我们就可以定量评估对于节点 <span class="math inline">\(t\)</span>，分裂 <span class="math inline">\(s\)</span> （表示具体的分裂属性和分裂值）的效果 <span class="math inline">\(\Phi(s,t)\)</span>： <span class="math display">\[
+\Phi(s,t)=i(t)-p_Ri(t_R)-p_Li(t_L)
+\]</span> 其中， <span class="math inline">\(p_R, p_L\)</span> 分别表示节点 <span class="math inline">\(t\)</span> 中的数据落入右边子节点和左边的子节点的概率，<span class="math inline">\(i(t_R), i(t_L)\)</span> 则为子节点的不纯度，显然 <span class="math inline">\(\Phi(s,t)\)</span> 表示的是，经过分裂之后，子节点的不纯度总和相对于父节点来说降低了多少，这个值越大表示这次分裂的效果越好。</p>
+<p>最后我们再定义树的不纯度 <span class="math inline">\(I(T)\)</span>： <span class="math display">\[
+I(T)=\sum_{t\in \widetilde{T}}i(t)p(t)
+\]</span> 注意上式只对所有的叶子节点 <span class="math inline">\(\widetilde{T}\)</span> 进行求和，<span class="math inline">\(p(t)\)</span> 可以用进入叶子节点 <span class="math inline">\(t\)</span> 中的样本数量除以样本总量求得。</p>
+<p>最后的最后给出三个常用的不纯度函数：</p>
+<ol style="list-style-type: decimal">
+<li>信息熵函数（Entropy Function）：<span class="math inline">\(\sum_{j=1}^{K}p_j \text{ log }\frac{1}{p_j}\)</span></li>
+<li>错误分类率（Misclassification Rate）：<span class="math inline">\(1 - \mathbf{max}_j p_j\)</span></li>
+<li>基尼指数（Gini Index）：<span class="math inline">\(\sum_{j=1}^{K}p_j (1-p_j)=1-\sum_{j=1}^{K}p_{j}^{2}\)</span></li>
+</ol>
+<p>读者可以尝试证明一下这三个不纯度函数是否满足我们之前所说的三个原则。</p>
+<ul>
+<li>给叶子节点赋值</li>
+</ul>
+<p>所有的叶子节点最后都要给出一个答案，即落入这个叶子节点的数据应该属于哪一类？赋值方式是相当简单粗暴的，少数服从多数，占多数的类即为该叶子节点的分类结果。</p>
+<ul>
+<li>什么时候停止分裂</li>
+</ul>
+<p>这取决于我们的不纯度函数和种树的策略，可以证明如果以错误分类率作为不纯度函数，子节点的不纯度之和总是小于父节点（证明见最后），意味着分裂将进行到每个叶子节点只有一个样本时（分无可分），这会让我们的树变得非常庞大，引起严重的过拟合问题。一种处理方法是，设置一个不纯度降低的阈值，当某次分裂带来的不纯度减小小于这个值时，可以认为此次分裂效果并不理想，应当停止分裂，这种方法的缺点在于分裂的依据过于短视，当前效果平平的分裂很有可能对之后几步影响巨大；另一种较为常用的策略是，不限制树的生长，后期进行剪枝。</p>
+<h4 id="处理缺失值">处理缺失值</h4>
+<p>决策树在处理缺失值时相比其他的算法有着天然的优势，一般来说有一下几种处理方法：</p>
+<ol style="list-style-type: decimal">
+<li>把「缺失」另做一类，或归到已有的一类中，即假设「缺失」也是对应特征的一个值；</li>
+<li>根据概率分布到子节点中，有全部分配到最大概率子节点的，也可以根据各子节点中的数量按比例分配</li>
+<li>替代分割法（surrogate split），当前节点的最佳分组是对于变量 <span class="math inline">\(s\)</span> 时，如果数据中（训练或者测试数据）有个别条目缺失 <span class="math inline">\(s\)</span> ，那么将通过其他变量进行一系列的分组，这些分组的结果非常接近 <span class="math inline">\(s\)</span> 的最佳分组结果，从中选出最接近的分组方法来处理缺失 <span class="math inline">\(s\)</span> 属性的条目。</li>
+<li>计算不纯度时，基于该特征未缺失的样本进行计算，而对于有缺失的样本可以将其添加到该特征下的所有分类中</li>
+</ol>
+<p>对于替代分割法，还需要说明一点，在寻找替代的分组时，不以不纯度减小作为准则，仅仅追求分类结果与目标分组最接近的（是对于当前节点分组最接近的还是所有衍生的子节点？）。替代分割法是最能体现决策树优势的一种处理缺失值的策略。</p>
+<p>尽管如此，作为相关问题领域的专家，往往有对于缺失数据更为可靠的补全方法，如果你有更可靠的依据或方法去补全数据，还是不要太依赖决策树的自动补全。</p>
+<h4 id="剪枝预热">剪枝预热</h4>
+<p>防止决策树过拟合有这几种方法：</p>
+<ol style="list-style-type: decimal">
+<li>停止准则：当某次分割的不纯度降低小于我们制定的标准时，该节点不再分裂；</li>
+<li>剪枝：不限制树的生长，在树形成之后合并某些节点，即剪枝；</li>
+<li>限定树的深度：当决策树层数达到限定的值深度时，停止生长；</li>
+</ol>
+<p>停止准则最大的问题是视线过于短浅，有时候一次不是那么完美的分裂在当前看起来效果不好，但是可能给后续的继续分裂创造良好的基础。</p>
+<p>实际的情况是，如果我们不限制树的大小，决策树总是倾向于尽可能长得大（层数多，叶子节点多），这带来的一个问题就是过拟合（可以证明父节点错分率必然大于子节点，决策树倾向于长大）。</p>
+<p>在讲剪枝前（Pruning）先引入几个概念：</p>
+<ul>
+<li>Descendant：派生节点，如果一个节点 <span class="math inline">\(t&#39;\)</span> 可以从另一个节点 <span class="math inline">\(t\)</span> 沿着一条连续的路径向下派生出来，我们就说，<span class="math inline">\(t&#39;\)</span> 是 <span class="math inline">\(t\)</span> 的派生节点；</li>
+<li>Ancestor：先祖节点，如果 <span class="math inline">\(t&#39;\)</span> 是 <span class="math inline">\(t\)</span> 的派生节点，那么反过来 <span class="math inline">\(t\)</span> 就是 <span class="math inline">\(t&#39;\)</span> 的派生节点；</li>
+<li>Branch：分支，如果 <span class="math inline">\(T_t\)</span> 是树 <span class="math inline">\(T\)</span> 的一个分支，那么 <span class="math inline">\(T_t\)</span> 的根节点 <span class="math inline">\(t\)</span> 以及 <span class="math inline">\(t\)</span> 所包含的所有派生节点构成了这个分支 <span class="math inline">\(T_t\)</span> ；</li>
+<li>Pruning：剪枝的过程是从原来的树 <span class="math inline">\(T\)</span> 中剪去一个分支 <span class="math inline">\(T_t\)</span> ，这个过程会去掉 <span class="math inline">\(T_t\)</span> 中的所有节点（除了 <span class="math inline">\(T_t\)</span> 的根节点 <span class="math inline">\(t\)</span>），可以用 <span class="math inline">\(T-T_t\)</span> 来表示这个剪枝的过程；剪枝过后的树可以用 <span class="math inline">\(T&#39;\)</span> 来表示，用 <span class="math inline">\(T&#39;&lt;T\)</span> 表示剪枝过后的树小于原来的树；</li>
+</ul>
+<div class="figure">
+<img src="../../../images/decisiontree0/prune.png">
+
+</div>
+<p>一个非常残酷的现实是，即使树 <span class="math inline">\(T\)</span> 的规模并不是很大，其分支数量也是相当惊人的，穷举所有的分支进行判断并不可行，我们需要一种更为聪明的策略来进行剪枝，敬请期待决策树系列的下一篇文章：Minimal Cost-Complexity Pruning…</p>
+<h4 id="动手玩一玩">动手玩一玩</h4>
+<p>本文提供了一个决策树的代码（没有剪枝），👉<a href="https://github.com/Cescfangs/ThinkStats-JupyterNotebook/tree/master/DecisionTrees" target="_blank" rel="external">戳这里</a>，是基于 <a href="http://shop.oreilly.com/product/9780596529321.do" target="_blank" rel="external">Programming Collective Intelligence</a> 第七章的一个案例，你也可以看 <a href="http://www.patricklamle.com/Tutorials/Decision%20tree%20python/tuto_decision%20tree.html" target="_blank" rel="external"><strong>Patrick L. Lê</strong></a> 写的一个详细的教程，他也提供了代码，先看一看再自己动手写一个完整的决策树代码，把代码和上面讲的对应起来，讲真对于加深理解很有帮助啊。</p>
+<h5 id="附证明">附证明：</h5>
+<p><span class="math inline">\(R(t) \geq R(t_L) + R(t_R)\)</span></p>
+<p>令节点 <span class="math inline">\(t\)</span> 的多数类是 <span class="math inline">\(j^*\)</span>：</p>
+<p><span class="math display">\[
+\begin {align}p(j^* |t)&amp; = p(j^*,t_L |t) +  p(j^*,t_R |t) \\ &amp;  = p(j^*|t_L) p(t_L|t)+p(j^*|t_R) p(t_R|t) \\ &amp; = p_Lp(j^*|t_L)+p_Rp(j^*|t_R) \\ &amp; \le p_L\underset{j}{\text{ max }}p(j|t_L)+p_R\underset{j}{\text{ max }}p(j|t_R) \\
+r(t)&amp; = 1-p(j^*|t) \\  &amp; \ge 1-\left[  p_L\underset{j}{\text{ max }}p(j|t_L)+p_R\underset{j}{\text{ max }}p(j|t_R)  \right] \\  &amp; = p_L(1-\underset{j}{\text{ max }}p(j|t_L))+p_R(1-\underset{j}{\text{ max }}p(j|t_R)) \\  &amp; = p_Lr(t_L)+p_Rr(t_R) \\ 
+R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L)r(t_L)+p(t_R)r(t_R) \\  &amp; = R(t_L)+R(t_R) \\
+\end {align}
+\]</span></p>
+<p>图一来自 <a href="http://www.ibm.com/developerworks/cn/analytics/library/ba-1507-decisiontree-algorithm/img01.png" target="_blank" rel="external">IBM 素材库</a></p>
+<p>图二来自<a href="http://bluewhale.cc/wp-content/uploads/2016/03/决策树结构图2.png" target="_blank" rel="external">蓝鲸的网站分析笔记</a></p>
+<p>文末证明过程参考：https://onlinecourses.science.psu.edu/stat857/node/53</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/decisiontrees/" rel="tag"># DecisionTrees</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/thinkstats/svm1/" rel="next" title="我所理解的SVM(支持向量机)2——核函数的应用">
+                <i class="fa fa-chevron-left"></i> 我所理解的SVM(支持向量机)2——核函数的应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于决策树"><span class="nav-number">1.</span> <span class="nav-text">关于决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关概念"><span class="nav-number">2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#种一棵决策树"><span class="nav-number">3.</span> <span class="nav-text">种一棵决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理缺失值"><span class="nav-number">4.</span> <span class="nav-text">处理缺失值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝预热"><span class="nav-number">5.</span> <span class="nav-text">剪枝预热</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动手玩一玩"><span class="nav-number">6.</span> <span class="nav-text">动手玩一玩</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#附证明"><span class="nav-number">6.1.</span> <span class="nav-text">附证明：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/thinkstats/decisiontree0/';
+          this.page.identifier = 'post/thinkstats/decisiontree0/';
+          this.page.title = '决策树系列0:你需要一棵决策树';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

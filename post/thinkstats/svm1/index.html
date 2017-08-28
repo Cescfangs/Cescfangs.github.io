@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MachineLearning,Stats,SVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这是 SVM 系列的第二篇，上一篇文章介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。">
+<meta name="keywords" content="MachineLearning,Stats,SVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我所理解的SVM(支持向量机)2——核函数的应用">
+<meta property="og:url" content="http://fangs.in/post/thinkstats/svm1/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="这是 SVM 系列的第二篇，上一篇文章介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/SVM/separate-3.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/linearNotdevisible.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/mapPhi.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/RBFSVM.png">
+<meta property="og:updated_time" content="2017-08-28T03:11:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="我所理解的SVM(支持向量机)2——核函数的应用">
+<meta name="twitter:description" content="这是 SVM 系列的第二篇，上一篇文章介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。">
+<meta name="twitter:image" content="http://fangs.in/images/SVM/separate-3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/thinkstats/svm1/"/>
+
+
+
+
+
+  <title>我所理解的SVM(支持向量机)2——核函数的应用 | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/thinkstats/svm1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">我所理解的SVM(支持向量机)2——核函数的应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-30T20:27:00+08:00">
+                2016-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thinkstats/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkstats</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/thinkstats/svm1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/thinkstats/svm1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>这是 SVM 系列的第二篇，<a href="http://fangs.in/post/thinkstats/svm0">上一篇文章</a>介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="接着上一篇文章">接着上一篇文章</h4>
+<p>大家好，我又回来更新了，非常抱歉这篇 SVM-2 在 SVM-1 后一个多月才填坑，<del>因为期间我又去搞别的东西了</del>，话不多说，让我们进入正题。</p>
+<div class="figure">
+<img src="../../../images/SVM/separate-3.png">
+
+</div>
+<p>上面这幅图是不是很眼熟，在 SVM-1 中我几乎靠着这一张图说完了支持向量机的主要思想，不知道你们注意到没有，在推导 SVM 之前，我的措辞是很严谨的——「图中的两组数据，显然它们是<strong>线性可分（linear separable）</strong>的」，一切的推导都建立在线性可区分的基础上，然而实际的很多问题都并非如此，如果我在上面的图上再加一个点： <img src="../../../images/SVM/linearNotdevisible.png"></p>
+<p>无论是 <span class="math inline">\(a,b,c\)</span> 都无法完美地把两种数据区分出来，实际上也不存在一条直线能完全区分出两种数据，这种情况就是不可线性区分的，核函数或许可以帮我们解决这个问题。</p>
+<h4 id="kernel-trick">4. Kernel Trick</h4>
+<p>上一篇文章的最后我们通过乘数法得到了 <span class="math inline">\(\sum_{k=1}^m\alpha_iy^{(i)}=0, w =\sum_{k=1}^m\alpha_iy^{(i)}x^{(i)}\)</span> ，现在我们把它们回带到 分界线 <span class="math inline">\(y=w^Tx+b\)</span> :</p>
+<p><span class="math display">\[
+\begin{split}
+y&amp;=\sum_{k=1}^m\alpha _iy^{(i)}x^{(i)}x+b\\
+&amp;=\sum_{k=1}^m\alpha _iy^{(i)}&lt; x^{(i)},x &gt;+b\\
+\end{split}
+\]</span></p>
+<p>如果我们已经求得 <span class="math inline">\(\alpha_i\)</span> 和 <span class="math inline">\(b\)</span>，那么 <span class="math inline">\(y\)</span> 可以写成仅依赖于 <span class="math inline">\(x^{(i)}\)</span> 和 <span class="math inline">\(x^{(j)}\)</span> 的矢量积形式，这一点非常关键。很多时候我们需要从数据中挖掘新的特征来进行训练，而不是简单粗暴地用原始数据，比如我从 <span class="math inline">\(x\)</span> 中挖掘出新的特征 <span class="math inline">\(x^2\)</span>， 我们需要再一步一步重新推导 <span class="math inline">\(y\)</span> 的表达式吗？只需要将 <span class="math inline">\(&lt;x^{(i)}, x&gt;\)</span> 换成 <span class="math inline">\(&lt;(x^{(i)})^2,x^2&gt;\)</span> 即可，更一般的：</p>
+<blockquote>
+<p>如果存在一种映射关系 <span class="math inline">\(\phi(x)\)</span>，将 <span class="math inline">\(x\)</span> 映射到另一空间中，已知 <span class="math inline">\(y=\sum_{k=1}^m\alpha_iy^{(i)} &lt; x^{(i)},x &gt; +b\)</span> ，那么新空间中的 <span class="math inline">\(y=\sum_{k=1}^m\alpha_iy^{(i)} &lt; \phi(x^{(i)}),\phi(x) &gt; +b\)</span>。</p>
+</blockquote>
+<p>整个过程非常的顺溜，<span class="math inline">\(\phi(x)\)</span> 可以将数据从低维空间映射到高维空间中，为数据分类提供了新的视角，如下图所示，一维空间中的数据点 <strong>X</strong> 和 <strong>O</strong> 互相交杂，在一维空间中我们无法找到一个分界点进行划分，但是通过 <span class="math inline">\(\phi(x)=(x,0.5x^2+2)\)</span> 映射到二维空间后，很容易找到分界线将这些不同类型的点区分开来。</p>
+<div class="figure">
+<img src="../../../images/SVM/mapPhi.png">
+
+</div>
+<p>映射函数 <span class="math inline">\(\phi\)</span> 通常将低维的数据（m）映射到更高维的空间（n）中，使得线性区分变为了可能， 考虑到 <span class="math inline">\(m&lt;&lt;n\)</span>，这引起的一个问题就是计算量随着维数的增加快速增大，但是我们又知道矢量点积的结果是一个数，怎么来简化这个操作呢？</p>
+<p>在这里引入核函数（Kernel Function） <span class="math inline">\(K(x^{(i)},x^{(j)})=\phi(x^{(i)})\cdot \phi(x^{(j)})\)</span> ，此时 ：</p>
+<p><span class="math display">\[
+y=\sum_{k=1}^m\alpha _iy^{(i)}K(x^{(i)},x)+b\\
+\]</span></p>
+<p>好像有点乱，让我们先来捋一捋：</p>
+<p><span class="math display">\[
+x^{(i)}\cdot x^{(j)}\longrightarrow \phi(x^{(i)})\cdot \phi(x^{(j)}) =K(x^{(i)},x^{(j)})
+\]</span></p>
+<p>映射函数 <span class="math inline">\(\phi\)</span> 的作用是将低维空间的数据映射到高维空间中，核函数 <span class="math inline">\(K\)</span> 表示的是映射之后高维空间中两个矢量的点积。</p>
+<p>通过映射函数，我们能从原始<strong>数据</strong>中（低维空间）抽象出所需的<strong>特征</strong>（高维空间），由低维空间向高维空间的转化很多时候非常的麻烦，有意思的是，无论是1维、10维、100维还是更高维的空间，其矢量点积都是一个常数，那么有没有什么捷径，可以避免维度转换的过程，通过相对简单的计算直接得到矢量积？答案就是核函数，还是举一个例子来说明吧：</p>
+<p>令 <span class="math inline">\(x=[x_1, x_2, x_3]^T,y=[y_1, y_2, y_3]^T\)</span>，我们定义 <span class="math inline">\(\phi(x)=[x_1x_1,x_1x_2,x_1x_3,x_2x_1,x_2x_2,x_2x_3,x_3x_1,x_3x_2,x_3x_3]\)</span> 将原始数据从三维空间映射到九维空间中，让我们来计算<span class="math inline">\(\phi(1,2,3) \cdot \phi(4,5,6)\)</span>：</p>
+<p><span class="math display">\[
+\begin{split}
+\phi(1,2,3)&amp;=[1,2,3,2,4,6,3,6,9]^T\\
+\phi(4,5,6)&amp;=[16,20,24,20,25,30,24,30,36]^T\\
+\phi(1,2,3) \cdot \phi(4,5,6) &amp;=1\times16+2\times 20 + 3\times 24 + 2\times 20 + 4 \times 25 + 6 \times 30 + 3 \times 24 + 6 \times 30 + 9\times 36=1024
+\end{split}
+\]</span></p>
+<p>可以看出计算还是相当繁琐的，现在让我们尝试找找对应的核函数：</p>
+<p><span class="math display">\[
+\begin{split}
+\phi(x)\cdot \phi(y)&amp;=[x_1x_1,x_1x_2,x_1x_3,x_2x_1,x_2x_2,x_2x_3,x_3x_1,x_3x_2,x_3x_3]^T\cdot [y_1y_1,y_1y_2,y_1y_3,y_2y_1,y_2y_2,y_2y_3,y_3y_1,y_3y_2,y_3y_3] \\
+&amp;= x_1y_1x_1y_1+x_1y_1x_2y_2+x_1y_1x_3y_3+x_2y_2x_1y_1+x_2y_2x_2y_2+x_2y_2x_3y_3\\&amp;+x_3y_3x_1y_1+x_3y_3x_2y_2+x_3y_3x_3y_3\\
+&amp;=(x_1y_1+x_2y_2+x_3y_3)^2\\
+&amp;=(x^Ty)^2\\
+&amp;=K(x,y)
+\end{split}
+\]</span></p>
+<p>这一次我们直接用核函数计算：</p>
+<p><span class="math display">\[
+\begin{split}
+K(x,y)=K((1,2,3),(4,5,6))=(1\times 4 + 2\times 5 + 3\times 6)^2=(32)^2=1024
+\end{split}
+\]</span></p>
+<p>相比于从低维映射到高维空间再进行矢量积运算，核函数大大简化了计算的过程，使得向更高维转化变为了可能，我们不需要知道低维空间的数据是怎样映射到高维空间的，我们只需要知道结果是怎么计算出来的。</p>
+<h4 id="介绍两种核函数">5. 介绍两种核函数</h4>
+<p>在支持向量机中常用的几种核函数是多项式型核（Polynomial Kernel）、<a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel" target="_blank" rel="external">径向基函数核</a>（ Radial Basis Function Kernel，又叫高斯核，简称 RBF）以及逻辑核（ Sigmoid Kernel）。</p>
+<ul>
+<li>多项式型</li>
+</ul>
+<p><span class="math display">\[
+\begin{split}
+K(\mathbf{x},\mathbf{y})&amp;=(\mathbf{x}^T\mathbf{y}+c)^d\\
+\end{split}
+\]</span></p>
+<p>如果 <span class="math inline">\(\mathbf{x},\mathbf{y}\)</span> 本身是 <span class="math inline">\(k\)</span> 维空间的向量，<a href="https://zh.wikipedia.org/wiki/二项式定理二项式定理" target="_blank" rel="external">多项式展开</a>后可知该核函数对应的空间维度为 <span class="math inline">\(\tbinom{k+d}{d}=\mathrm{C}^{k+d}_d=O(k^d)\)</span> ，计算复杂度随着维数增加呈指数爆炸，但是用核函数进行计算的复杂度为 <span class="math inline">\(O(k)\)</span> 。</p>
+<p>维数越高，偏差（bias）越低，方差（variance）越高，容易出现过拟合的情况，相反维数越低，偏差就会越大，但是方差会随之减小，一般不宜选择过高的维度，最适合的维度需要通过交叉验证（cross validation）等方法来确定，关于方差和偏差的分析，可以看看这篇<a href="http://scott.fortmann-roe.com/docs/BiasVariance.html" target="_blank" rel="external">博文</a>。</p>
+<ul>
+<li>RBF</li>
+</ul>
+<p><span class="math display">\[
+K(\mathbf {x} ,\mathbf {y} )=e^{-{\frac {||\mathbf {x} -\mathbf {y} ||^{2}}{2\sigma^2}}}
+\]</span></p>
+<p>也可以写成这样的形式：</p>
+<p><span class="math display">\[
+K(\mathbf {x} ,\mathbf {y} )=e^{-\gamma||\mathbf {x} -\mathbf {y} ||^{2}}
+\]</span></p>
+<p>高斯核是一个对应于无限空间的核函数，证明的方法非常简单，对 <span class="math inline">\(e^x\)</span> 进行泰勒级数展开即可，为了书写上的方便，这里令 <span class="math inline">\(\sigma^2=1\)</span>：</p>
+<p><span class="math display">\[
+\begin{split}
+K(\mathbf {x} ,\mathbf {y} )&amp;=e^ {-{\frac {||\mathbf {x} -\mathbf {y} ||^{2}}{2}}}\\
+&amp;=e^ {-{\frac {||\mathbf {x} ||^{2}}{2}}}e^ {-{\frac {||\mathbf {y} ||^{2}}{2}}}e^ {\mathbf {x^Ty} }\\
+&amp;=e^ {-{\frac {||\mathbf {x} ||^{2}}{2}}}e^ {-{\frac {||\mathbf {y} ||^{2}}{2}}}\sum_{n=0}^\infty \frac{ (\mathbf {x^Ty})^n}{n!} \\
+\end{split}
+\]</span></p>
+<p>实际上我们无法给出映射到无限空间的函数 <span class="math inline">\(\phi\)</span> ，更没有办法对两个无限维度的矢量进行点乘运算，但是我们却可以通过高斯核直接给出无限空间矢量积表达式，厉害了我的核！！！</p>
+<p>高斯核的偏差和方差通过 <span class="math inline">\(\sigma^2\)</span> 来控制，<span class="math inline">\(\sigma^2\)</span> 越大偏差越大，方差越小，在下一部分相似度里进行解释好像更加直观。</p>
+<div class="figure">
+<img src="../../../images/SVM/RBFSVM.png">
+
+</div>
+<h4 id="相似度核函数的另一种理解">6. 相似度：核函数的另一种理解</h4>
+<p>核函数还可以理解为两个数据点的相似程度，两个向量的点乘其实就是将其中一个向量投影到另一个向量上，重叠的长度越大，相似度越大，向量点乘的结果也越大。以高斯核为例，<span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=e^{-{\frac {||\mathbf {x} -\mathbf {y} ||^{2}}{2\sigma^2}}}\)</span> 衡量的是向量 <span class="math inline">\(\mathbf{x}\)</span> 和 <span class="math inline">\(\mathbf{y}\)</span> 在无限空间的相似度，当 <span class="math inline">\(\mathbf{x} =\mathbf{y}\)</span> 时，<span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=1\)</span>，表示两个向量完全重合，当<span class="math inline">\(||\mathbf{x} -\mathbf{y}||\to\infty\)</span> 时， <span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=0\)</span> ，两个向量之间的相似度很小；另一方面，当 <span class="math inline">\(\sigma^2\)</span> 的值很小时，核函数的值越有可能趋向于0，向量 <span class="math inline">\(\mathbf{x}\)</span> 和 <span class="math inline">\(\mathbf{y}\)</span> 只有在相当接近的情况下才会被判别为相似，也就是说只有在 <span class="math inline">\(\mathbf{y}\)</span> 邻域相当小的范围内才会被认为是相似于它的向量，这样严苛的条件确保了高精度（低偏差）但是却很容易过拟合（高方差）。</p>
+<p>选择合适的核函数并不是一件容易的事情，因为评估数据点之间的相似度往往需要专业领域的知识，幸运的是大多数情况下高斯核都能取得不错的结果。核函数并不是支持向量机专用的技巧，任何算法只要能写成向量相乘的形式就可以运用核函数进行优化。</p>
+<h4 id="怎么构造核函数">7. 怎么构造核函数</h4>
+<p>一个正确的核函数对于数据相似度有着正确的描述，两个矢量越接近重合，相似度越大，越接近正交相似度越小，多项式型核和高斯核都是正确的核函数，那么对于核函数正确与否的一般标准是什么呢？让我们引入核矩阵。</p>
+<p>定义一个<span class="math inline">\(m\times m\)</span> 的矩阵 <span class="math inline">\(K\)</span>：</p>
+<p><span class="math display">\[
+K_{ij}=K(x^{(i)},x^{(j)})=\phi(x^{(i)})\cdot \phi(x^{(j)})
+\]</span></p>
+<p>根据矢量点积的性质易得 <span class="math inline">\(K(i,j)=K(j,i)\)</span>，显然这是一个对称矩阵，接下来我们证明它是一个半正定的对称矩阵，对于任意的向量 <span class="math inline">\(\mathbf{z}\)</span>：</p>
+<p><span class="math display">\[
+\begin{split}
+z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
+&amp;=\sum_{i=1}^m\sum_{j=1}^mz_i\phi(x^{(i)})^T\phi(x^{(j)})z_j\\
+&amp;=\left(\sum_{i=1}^m z_i\phi(x^{(i)})\right)^T\left(\sum_{j=1}^mz_j\phi(x^{(j)})\right)\\
+&amp;=\left(\sum_{i=1}^mz_i\phi(x^{(i)})\right)^2\\
+&amp;\geqslant0
+\end{split}
+\]</span></p>
+<p>我们证明了核函数的一个必要条件是对应的核矩阵为半正定对称矩阵，事实上这个条件是充分且必要的，也就是 <a href="https://en.wikipedia.org/wiki/Mercer&#39;s_theorem" target="_blank" rel="external">Mercer’s theorem</a>：</p>
+<blockquote>
+<p>一个核函数 <span class="math inline">\(K: \mathbb{R}^n\times \mathbb{R}^n\to\mathbb{R}\)</span> 成立的充要条件为，对于任意的 <span class="math inline">\([x^{(1)},x^{(2)},x^{(3)}\cdots x^{(m)}]\)</span>，其对应的核矩阵为半正定对称矩阵。</p>
+</blockquote>
+<p>关于 <a href="https://en.wikipedia.org/wiki/Mercer&#39;s_theorem" target="_blank" rel="external">Mercer’s theorem</a> 的证明超出了这篇文章的范畴，有兴趣的同学可以自己查找相关资料或者戳<a href="http://web.iitd.ac.in/~sumeet/CLT2008S-lecture18.pdf" target="_blank" rel="external">这里</a>了解如何证明其充分性。</p>
+<h4 id="再说一点">8. 再说一点</h4>
+<p>原本想在这篇文章里写完 SVM 的核函数和正则化的，但是第一篇和第二篇之间间隔太长，很多东西都得重新看一遍，导致写核函数部分花了太长时间，暂时先搁置正则化留到第三篇再写？ 欢迎转载，注明出处就好~~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/svm/" rel="tag"># SVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/thinkstats/ml_0_linearregression/" rel="next" title="从线性回归说起">
+                <i class="fa fa-chevron-left"></i> 从线性回归说起
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/thinkstats/decisiontree0/" rel="prev" title="决策树系列0:你需要一棵决策树">
+                决策树系列0:你需要一棵决策树 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#接着上一篇文章"><span class="nav-number">1.</span> <span class="nav-text">接着上一篇文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kernel-trick"><span class="nav-number">2.</span> <span class="nav-text">4. Kernel Trick</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍两种核函数"><span class="nav-number">3.</span> <span class="nav-text">5. 介绍两种核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相似度核函数的另一种理解"><span class="nav-number">4.</span> <span class="nav-text">6. 相似度：核函数的另一种理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#怎么构造核函数"><span class="nav-number">5.</span> <span class="nav-text">7. 怎么构造核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再说一点"><span class="nav-number">6.</span> <span class="nav-text">8. 再说一点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/thinkstats/svm1/';
+          this.page.identifier = 'post/thinkstats/svm1/';
+          this.page.title = '我所理解的SVM(支持向量机)2——核函数的应用';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

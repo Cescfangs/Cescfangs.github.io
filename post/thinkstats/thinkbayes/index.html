@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tec,MachineLearning,Stats,Bayes," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Think Bayes 贝叶斯定理是统计学中非常重要的一个定理，以贝叶斯定理为基础的统计学派在统计学世界里占据着重要的地位，和概率学派从事件的随机性出发不同，贝叶斯统计学更多地是从观察者的角度出发，事件的随机性不过是观察者掌握信息不完备所造成的，观察者所掌握的信息多寡将影响观察者对于事件的认知。">
+<meta name="keywords" content="Tec,MachineLearning,Stats,Bayes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Think Bayes">
+<meta property="og:url" content="http://fangs.in/post/thinkstats/thinkbayes/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="Think Bayes 贝叶斯定理是统计学中非常重要的一个定理，以贝叶斯定理为基础的统计学派在统计学世界里占据着重要的地位，和概率学派从事件的随机性出发不同，贝叶斯统计学更多地是从观察者的角度出发，事件的随机性不过是观察者掌握信息不完备所造成的，观察者所掌握的信息多寡将影响观察者对于事件的认知。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/ThinkBayes/venn.png?r=89">
+<meta property="og:image" content="http://fangs.in/images/ThinkBayes/Screen%20Shot%202016-08-09%20at%2021.24.18.png?r=87">
+<meta property="og:updated_time" content="2017-08-28T03:20:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Think Bayes">
+<meta name="twitter:description" content="Think Bayes 贝叶斯定理是统计学中非常重要的一个定理，以贝叶斯定理为基础的统计学派在统计学世界里占据着重要的地位，和概率学派从事件的随机性出发不同，贝叶斯统计学更多地是从观察者的角度出发，事件的随机性不过是观察者掌握信息不完备所造成的，观察者所掌握的信息多寡将影响观察者对于事件的认知。">
+<meta name="twitter:image" content="http://fangs.in/images/ThinkBayes/venn.png?r=89">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/thinkstats/thinkbayes/"/>
+
+
+
+
+
+  <title>Think Bayes | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/thinkstats/thinkbayes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Think Bayes</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-20T16:10:00+08:00">
+                2016-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thinkstats/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkstats</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/thinkstats/thinkbayes/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/thinkstats/thinkbayes/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="think-bayes">Think Bayes</h4>
+<p>贝叶斯定理是统计学中非常重要的一个定理，以贝叶斯定理为基础的统计学派在统计学世界里占据着重要的地位，和概率学派从事件的随机性出发不同，贝叶斯统计学更多地是从观察者的角度出发，事件的随机性不过是观察者掌握信息不完备所造成的，观察者所掌握的信息多寡将影响观察者对于事件的认知。</p>
+<a id="more"></a>
+<h4 id="条件概率和全概率">条件概率和全概率</h4>
+<p>在介绍贝叶斯定理之前，先简单地介绍一下<a href="https://zh.wikipedia.org/wiki/条件概率" target="_blank" rel="external">条件概率</a>，描述的是事件 A 在另一个事件 B 已经发生条件下的概率，记作 <span class="math inline">\(P(A|B)\)</span>， A 和 B 可能是相互独立的两个事件，也可能不是： <span class="math display">\[
+P(A|B)=\frac{P(A\cap B)}{P(B)}
+\]</span> <span class="math inline">\(P(A\cap B)\)</span> 表示 A，B 事件同时发生的概率，如果 A 和 B 是相互独立的两个事件，那么： <span class="math display">\[
+P(A|B)=\frac{P(A\cap B)}{P(B)}=\frac{P(A)\times P(B)}{P(B)}=P(A)
+\]</span> 上面的推导过程反过来证明了如果 A 和 B 是相互独立的事件，那么事件 A 发生的概率与 B 无关。</p>
+<p>稍微做一下改变： <span class="math display">\[
+P(A\cap B)=P(A|B)\times P(B)
+\]</span> 考虑到先验条件 B 的多种可能性，这里引入全概率公式： <span class="math display">\[
+P(A) =P(A\cap B)+P(A\cap B^C)=P(A|B)\times P(B)+P(A|B^c)\times P(B^c)
+\]</span> 这里 <span class="math inline">\(B^c\)</span> 表示事件 B 的互补事件，从集合的角度来说是 B 的补集： <span class="math display">\[
+P(B)+P(B^c)=1
+\]</span> 条件概率和全概率公式可以通过韦恩图形象地表示出来：</p>
+<div class="figure">
+<img src="../../../images/ThinkBayes/venn.png?r=89">
+
+</div>
+<h4 id="贝叶斯公式">贝叶斯公式</h4>
+<p>在条件概率和全概率的基础上，很容易推导出贝叶斯公式： <span class="math display">\[
+P(A|B)=\frac{P(A\cap B)}{P(B)}=\frac{P(B|A)\times P(A)}{P(B)}=\frac{P(B|A)\times P(A)}{P(B|A)\times P(A)+P(B|A^c)\times P(A^c)}
+\]</span> 看上去贝叶斯公式只是把 A 的后验概率转换成了 B 的后验概率 + A 的边缘概率的组合表达形式，因为很多现实问题中<span class="math inline">\(P(A|B)\)</span> 和 <span class="math inline">\(P(A\cap B)\)</span> 很难直接观测，但是 <span class="math inline">\(P(B|A)\)</span> 和 <span class="math inline">\(P(A)\)</span> 却很容易测得，利用贝叶斯公式可以方便我们计算很多实际的概率问题。</p>
+<h4 id="推理误区">推理误区</h4>
+<p>在生活中，几乎所有人（包括统计学者）都会无意识地将两个事件的后验概率混淆，即： <span class="math display">\[
+P(A|B)=P(B|A)
+\]</span> 最经典的一个例子就是疾病检测，假设某种疾病在所有人群中的感染率是0.1%，医院对于该疾病检测准确率为 99%（检查结果为阳性，有 99% 的可能性患病；阴性则 99% 的可能性为正常），如果从人群中随机抽一个人去检测，医院给出的检测结果为阳性，那么这个人实际得病的概率是多少？</p>
+<p>很多人多会脱口而出 “99%”，但真实概率远低于此，因为他们把两个后验概率搞混了，如果用 A 表示这个人患有该疾病，用 B 表示医院检测的结果是阳性，那么 <span class="math inline">\(P(B|A) = 99\%\)</span> 表示的是「已知一个人得病的情况下医院检测出阳性的概率」，而我们现在问的是「已知检测结果为阳性的情况下这个人患病的概率」，即 <span class="math inline">\(P(A|B)\)</span> 。</p>
+<p>我们可以用贝叶斯定理来计算这个人实际得病的概率： <span class="math display">\[
+P(A|B)=\frac{P(B|A)\times P(A)}{P(B|A)\times P(A)+P(B|A^c)\times P(A^c)}
+\]</span> 其中：</p>
+<ul>
+<li><span class="math inline">\(P(A)=0.001\)</span>，被检测者患病的概率</li>
+<li><span class="math inline">\(P(A^c)=0.999\)</span>，被检测未者患病的概率</li>
+<li><span class="math inline">\(P(B|A)=0.99\)</span>，已知患病的情况下检测为阳性的概率</li>
+<li><span class="math inline">\(P(B|A^c)=0.01\)</span>，已知未患病的情况下检测为阳性的概率</li>
+</ul>
+<p>将上面的概率代入到贝叶斯公式中，可得： <span class="math display">\[
+P(A|B)=\frac{P(B|A)\times P(A)}{P(B|A)\times P(A)+P(B|A^c)\times P(A^c)}=\frac{0.99\times 0.001}{0.99\times 0.001 + 0.01\times 0.999}\approx 0.09
+\]</span> 这个公式在这里的实际意义是什么？让我们用图来解释（图中概率经过四舍五入，考虑到图片的尺寸，面积并没有和概率严格对应起来）： <img src="../../../images/ThinkBayes/Screen%20Shot%202016-08-09%20at%2021.24.18.png?r=87"></p>
+<p>从贝叶斯的角度来看，随意选取的一个被测者，由于信息并不充分，未检测之前有假阳性、真阳性、假阴性和真阴性四种可能，这些可能性由检测技术和该疾病的感染率决定，当检测结果为阳性的时候，只剩下真阳性和假阳性两种可能，而真阳性的概率仅为假阳性的十分之一，贝叶斯公式在这里的实际意义是： <span class="math display">\[
+P(A|B)=\frac{真阳性}{假阳性+真阳性}=\frac{0.001}{0.01+0.001}\approx0.09
+\]</span> 即使被医院检测为阳性，实际患病的概率其实还不到10%，有很大可能是假阳性，往往需要复检来确定是否真的患病，让我们再来计算初检和复检结果都为阳性时，患病的可能性。假设两次检查的准确率相同，都是99%，这里令 B 为第一次检测结果为阳性，C 为第二次检测结果为阳性，A 为被检测者患病，那么两次检测结果都是阳性患病的概率可以表示为： <span class="math display">\[
+P(A|(B\cap C))=\frac{P((B\cap C)|A)\times P(A)}{P((B\cap C)|A)\times P(A)+P((B\cap C)|A^c)\times P(A^c)}
+\]</span> 其中：</p>
+<ul>
+<li><span class="math inline">\(P(A)=0.001\)</span>，被检测者患病的概率</li>
+<li><span class="math inline">\(P(A^c)=0.999\)</span>，被检测者未患病的概率</li>
+<li><span class="math inline">\(P((B\cap C)|A) = 0.99\times 0.99 = 0.9801\)</span>，已知患病情况下连续两次检测结果为阳性的概率</li>
+<li><span class="math inline">\(P((B\cap C)|A^c) = 0.01\times 0.01 = 0.0001\)</span>，已知未患病情况下连续两次检测结果为阳性的概率</li>
+</ul>
+<p>代入后可得： <span class="math display">\[
+\begin{split}
+P(A|(B\cap C)) &amp;=\frac{P((B\cap C)|A)\times P(A)}{P((B\cap C)|A)\times P(A)+P((B\cap C)|A^c)\times P(A^c)}\\&amp;=\frac{0.9801\times 0.001}{0.9801\times 0.001 + 0.0001\times 0.999}\\&amp;\approx 0.9
+\end{split}
+\]</span> 可见复检结果大大提高了检测的可信度，联系上面的图，复检的意义在于大幅减少假阳性的可能（0.01 -&gt; 0.0001）从而提高阳性检测的准确性。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tec/" rel="tag"># Tec</a>
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/bayes/" rel="tag"># Bayes</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/thinkstats/likelihood/" rel="next" title="似然与极大似然估计">
+                <i class="fa fa-chevron-left"></i> 似然与极大似然估计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/thinkstats/svm0/" rel="prev" title="我所理解的 SVM（支持向量机）- 1">
+                我所理解的 SVM（支持向量机）- 1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#think-bayes"><span class="nav-number">1.</span> <span class="nav-text">Think Bayes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#条件概率和全概率"><span class="nav-number">2.</span> <span class="nav-text">条件概率和全概率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#贝叶斯公式"><span class="nav-number">3.</span> <span class="nav-text">贝叶斯公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#推理误区"><span class="nav-number">4.</span> <span class="nav-text">推理误区</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/thinkstats/thinkbayes/';
+          this.page.identifier = 'post/thinkstats/thinkbayes/';
+          this.page.title = 'Think Bayes';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

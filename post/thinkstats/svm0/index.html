@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MachineLearning,Stats,SVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="众所周知 SVM 是非常强大的一种分类算法，有着媲美神经网络的分类效果，实现过程却简单得多。这篇文章不会系统地介绍 SVM（因为我并不是线性代数、凸优化等方面的专家），而是以一个学习者的角度描述 SVM 产生的过程，由于内容较长，将会分成三篇文章。">
+<meta name="keywords" content="MachineLearning,Stats,SVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我所理解的 SVM（支持向量机）- 1">
+<meta property="og:url" content="http://fangs.in/post/thinkstats/svm0/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="众所周知 SVM 是非常强大的一种分类算法，有着媲美神经网络的分类效果，实现过程却简单得多。这篇文章不会系统地介绍 SVM（因为我并不是线性代数、凸优化等方面的专家），而是以一个学习者的角度描述 SVM 产生的过程，由于内容较长，将会分成三篇文章。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/SVM/separate-3.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/margin.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/2margins.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/2margins-road.png">
+<meta property="og:image" content="http://fangs.in/images/SVM/width.png">
+<meta property="og:updated_time" content="2017-08-28T03:11:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="我所理解的 SVM（支持向量机）- 1">
+<meta name="twitter:description" content="众所周知 SVM 是非常强大的一种分类算法，有着媲美神经网络的分类效果，实现过程却简单得多。这篇文章不会系统地介绍 SVM（因为我并不是线性代数、凸优化等方面的专家），而是以一个学习者的角度描述 SVM 产生的过程，由于内容较长，将会分成三篇文章。">
+<meta name="twitter:image" content="http://fangs.in/images/SVM/separate-3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/thinkstats/svm0/"/>
+
+
+
+
+
+  <title>我所理解的 SVM（支持向量机）- 1 | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/thinkstats/svm0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">我所理解的 SVM（支持向量机）- 1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-08T20:26:00+08:00">
+                2016-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thinkstats/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkstats</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/thinkstats/svm0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/thinkstats/svm0/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>众所周知 SVM 是非常强大的一种分类算法，有着媲美神经网络的分类效果，实现过程却简单得多。这篇文章不会系统地介绍 SVM（因为我并不是线性代数、凸优化等方面的专家），而是以一个学习者的角度描述 SVM 产生的过程，由于内容较长，将会分成三篇文章。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="一个好的分类是怎么样的">1. 一个好的分类是怎么样的</h4>
+<p>图中的两组数据，显然它们是线性可分（linear separable）的，图里给出的三条分界线都可以准确区分这两类数据，它们是不是一样好？如果不是，哪一条看起来更加合适？</p>
+<div class="figure">
+<img src="../../../images/SVM/separate-3.png">
+
+</div>
+<p>直觉告诉我们是 a。相比之下，b 和 c 离个别点太近了，我们很难拍着胸脯说“这个点在分界线下面，所以绝对是 X”，因为分界线稍微挪一挪就可以改变这些点的属性，我们想要的是一个相对自信的分界线，使靠近分界线的点与分界线的距离足够大，上图中的分界线 a 就符合我们的需求。</p>
+<p>接下来我们画出 a 的两条平行线，距离分界线 a 最近的点（两种点都有）会落在这两条平行线上，而我们的分界线 <span class="math inline">\(l\)</span> 就在 <span class="math inline">\(a_1\)</span> 和 <span class="math inline">\(a_2\)</span> 中间，这三条线看起来就像一条公路，这条路把不同的点分隔在路的两旁， <span class="math inline">\(a_1\)</span> 和 <span class="math inline">\(a_2\)</span> 之间的距离就是路宽，分类的过程就好比在这块地上修一条公路把不同类型的点分开，并且这条路越宽越好， SVM 要做的就是建好这条最宽的路。<img src="../../../images/SVM/margin.png"></p>
+<p>PS. 这里所说的分界线严格来说是 decision boundary，decision boundary 在二维空间是一条线，在三维空间是一个平面，更高维的空间里称作超平面，为了方便本文都用分界线来代表 decision boundary。</p>
+<h4 id="进入向量的世界">2. 进入向量的世界</h4>
+<p>你或许已经注意到 SVM 的全称是 Support Vector Machine（支持向量机），在推导 SVM 公式过程中，我们几乎都是在和向量打交道。刚接触 SVM 的时候我对这个名字非常诧异，SVM 很强是没错，但是名字也太「随意」了吧？希望写完这篇文章以后我能理解为什么这种算法叫做支持向量机。</p>
+<p>如果你之前没有接触过向量，建议花一个小时左右的时间熟悉一下向量的概念和基本性质。我们先把空间上的点用向量来表示（以原点为起点的向量）：</p>
+<p><span class="math display">\[
+\vec{x^{(i)}}\in \mathbb{R}^n, i=1,2...m
+\]</span></p>
+<p><span class="math inline">\(m\)</span> 指的是点的数量，<span class="math inline">\(\mathbb{R}^n\)</span> 表示的是 <span class="math inline">\(n\)</span> 维空间，分界线可以用下式来表示：</p>
+<p><span class="math display">\[
+\vec{w^T} \cdot {\overrightarrow{x}}+b=0
+\]</span></p>
+<p>出于美观和方便的考虑，我倾向于去掉箭头符号，在心里记住 <span class="math inline">\(w,x\)</span> 都是向量，<span class="math inline">\(b\)</span> 是常数：</p>
+<p><span class="math display">\[
+w^T \cdot x+b=0
+\]</span></p>
+<p>虽然写成了向量的形式，其实并没有什么大不了的，我们可以把它和初中时候学过的直线表达式联系起来：</p>
+$$
+<span class="math display">\[\begin{split}
+
+w^T \cdot x+b&amp;=0\\
+\begin{bmatrix}w_1 &amp; w_2\end{bmatrix}\cdot
+\begin{bmatrix}x_1\\x_2\end{bmatrix}+b&amp;=0\\
+w_1x_1+w_2x_2+b&amp;=0\\
+x_2=-\frac{w_1}{w_2}x_1&amp;-b\quad\dots \quad (w_2\neq0)
+\end{split}\]</span>
+<p>$$</p>
+<p>显然向量的形式更加简洁，特别是在高维空间的情况下，还有一个好处就是，矢量的形式下 <span class="math inline">\(w\)</span> 刚好与分界线垂直，这个性质会在后面用到。<span class="math inline">\(w^T \cdot x+b=0\)</span> 表示的是分界线上所有的点，当 <span class="math inline">\(w^T \cdot x+b&gt;0\)</span> 时，表示的是分界线上方的区域，反之则是分界线下方的区域： <img src="../../../images/SVM/2margins.png"></p>
+<p>对于 SVM 来说仅仅这样是不够的，还记得吗我们要修一条路出来，我们得确保在一条足够宽的路里面没有数据点： <img src="../../../images/SVM/2margins-road.png"></p>
+<p>我又把路画上去了，因为两条排水渠（暂且把路的两边叫做排水渠吧）与分界线等距，就相当于在分界线的表达式里加上/减去同样的截距 <span class="math inline">\(\delta\)</span>，实际上引入新的变量 <span class="math inline">\(\delta\)</span> 是没有必要的，因为 <span class="math inline">\(b\pm\delta\)</span> 也仅仅表示截距而已，不妨把 <span class="math inline">\(\delta\)</span> 换成1（换成2,3,4…都可以，换成1更方便，仅此而已），现在我们有了新的判别条件：</p>
+<p><span class="math display">\[
+\begin{cases}w^T \cdot x+b\geqslant1\quad\dots\bigcirc \\ w^T \cdot x+b\leqslant-1\ \dots \times\end{cases}
+\]</span></p>
+<p>数学总是追求简洁的形式，在这里引入 <span class="math inline">\(y^{(i)}\)</span>，表示的是对象的属性：</p>
+<p><span class="math display">\[
+\begin{equation}
+y^{(i)}=
+\begin{cases}
+\ \ \ 1,\quad x^{(i)}=\bigcirc\\
+-1,\quad x^{(i)}=\times 
+\end{cases}
+\end{equation}
+\]</span></p>
+<p>这样前面的式子就可以写成更为简洁的形式： <span class="math display">\[
+y^{(i)}(w^T \cdot x^{(i)}+b)\geqslant1
+\]</span> ps. 要证明 <span class="math inline">\(w\)</span> 与分界线垂直，只需要将 <span class="math inline">\(w\)</span> 与分界线的方向向量相乘即可：</p>
+<p><span class="math display">\[
+\begin{split}
+\vec{w}\cdot\vec{k}&amp;=w^T\cdot k\\
+&amp;=\begin{bmatrix}w_1 &amp; w_2\end{bmatrix}\cdot
+\begin{bmatrix}1\\-\frac{w_1}{w_2}\end{bmatrix}\\
+&amp;=w_1-w_1\\
+&amp;=0\\
+\end{split}
+\]</span></p>
+<h4 id="什么是支持向量">3. 什么是支持向量</h4>
+<p>通过上面一节，我们得到了一个限制条件：<span class="math inline">\(y^{(i)}(w^T \cdot x^{(i)}+b)\geqslant1\)</span> ，这是我们修路时要遵循的原则，以此为依据修一条尽可能宽的路！那么路宽该怎么表示？</p>
+<p><img src="../../../images/SVM/width.png"> 在两条排水渠上各取一点 <span class="math inline">\((x_-, x_+)\)</span> 连接成向量 <span class="math inline">\(\overrightarrow{x_-x_+}\)</span> ，根据向量的知识求得路宽并不难，只需将 <span class="math inline">\(\overrightarrow{x_-x_+}\)</span> 投影到分界线的单位法向量即可，在第二节里我们已经知道 <span class="math inline">\(w\)</span> 与分界线垂直，容易得到：</p>
+<p><span class="math display">\[
+\begin{split}
+width &amp;=\overrightarrow{x_-x_+}\cdot \frac{\vec{w}}{||\vec{w}||}\\
+&amp;=\frac{1}{||\vec{w}||}[w^T\cdot(x_+-x_-)]\\
+&amp;=\frac{1}{||\vec{w}||}[w^T\cdot x_+-w^T\cdot x_-]\\
+&amp;=\frac{1}{||\vec{w}||}[1-b-(-1-b)]\\
+&amp;=\frac{2}{||\vec{w}||}
+\end{split}
+\]</span></p>
+<p>我们发现路宽的表达式仅与<span class="math inline">\(||w||\)</span> （ <span class="math inline">\(w\)</span> 的长度）有关，要让修的路最宽，意味着<span class="math inline">\(||w||\)</span> 要最小，即 <span class="math inline">\(\frac{1}{2}||w||^2\)</span> 最小（为了后续公式推导方便），让我们明确一下新的目标：</p>
+<blockquote>
+<p>在限制条件 <span class="math inline">\(y^{(i)}(w^T \cdot x^{(i)}+b)\geqslant1\)</span> 下，找到合适的参数 <span class="math inline">\((w, b)\)</span> 使 <span class="math inline">\(\frac{1}{2}||w||^2\)</span> 最小</p>
+</blockquote>
+<p>这是一个基于 KKT 条件的二次规划问题，优化原理的内容超出了这篇文章的范畴，如果有兴趣可以参考凸优化的教材，在这里我们只要知道拉格朗日乘数法可以求得这个最优解，引入新的系数 $_i $:</p>
+<p><span class="math display">\[
+\begin{equation}
+\alpha_{i}=
+\begin{cases}
+\ \ \ 0,\quad\quad\quad \quad y^{(i)}(w^T \cdot x^{(i)}+b)&gt;1\\
+\geqslant0, \quad\quad\ \ \ \quad y^{(i)}(w^T \cdot x^{(i)}+b)=1
+\end{cases}
+\end{equation}
+\]</span></p>
+<p>这样问题转化成选取合适的参数 <span class="math inline">\(\alpha\)</span> 最小化 <span class="math inline">\(\mathcal{L}\)</span> :</p>
+<p><span class="math display">\[
+min \ \mathcal{L}=\frac{1}{2}||w||^2-\sum_{k=1}^m\alpha_i[y^{(i)}(w^T \cdot x^{(i)}+b)-1]\\
+\sum_{k=1}^m\alpha_i[y^{(i)}(w^T \cdot x^{(i)}+b)-1]=0
+\]</span></p>
+<p>即使你完全不知道凸优化和拉格朗日乘数法也没有关系，你可以试着这么理解，<span class="math inline">\(\mathcal{L}\)</span> 和原来的目标是一致的，因为 <span class="math inline">\(\sum=0\)</span> ，同时我们又把限制条件加入到了表达式当中，接下来分别对 <span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span> 求偏导数：</p>
+<p><span class="math display">\[
+\frac{\partial \mathcal{L}}{\partial b} = -\sum_{k=1}^m\alpha_iy^{(i)}\\
+\frac{\partial \mathcal{L}}{\partial w} =w -\sum_{k=1}^m\alpha_iy^{(i)}x^{(i)}\\
+\]</span></p>
+<p>令以上两式为0，我们可以得到：</p>
+<p><span class="math display">\[
+\begin{split}
+\sum_{k=1}^m\alpha_iy^{(i)}=0\\
+w =\sum_{k=1}^m\alpha_iy^{(i)}x^{(i)}\\
+\end{split}
+\]</span></p>
+<p>因为 <span class="math inline">\(\alpha _i\)</span> 只有当 <span class="math inline">\(y^{(i)}(w^T \cdot x^{(i)}+b)=1\)</span> 时（位于排水渠上的点）才能取到非零的值，所以 <span class="math inline">\(w\)</span> 只依赖于边界上的矢量，换句话说，正是位于边界上的这些向量支撑起了分界线（超平面），所以这些向量被叫做支持向量，这也是支持向量机名字的由来。</p>
+<p>ps. 关于 KKT 条件下的二次规划问题，有兴趣的同学可以参阅这篇<a href="http://www.cnblogs.com/zhangchaoyang/articles/2726873.html" target="_blank" rel="external">文章</a>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/svm/" rel="tag"># SVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/thinkstats/thinkbayes/" rel="next" title="Think Bayes">
+                <i class="fa fa-chevron-left"></i> Think Bayes
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/thinkstats/ml_0_linearregression/" rel="prev" title="从线性回归说起">
+                从线性回归说起 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一个好的分类是怎么样的"><span class="nav-number">1.</span> <span class="nav-text">1. 一个好的分类是怎么样的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进入向量的世界"><span class="nav-number">2.</span> <span class="nav-text">2. 进入向量的世界</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是支持向量"><span class="nav-number">3.</span> <span class="nav-text">3. 什么是支持向量</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/thinkstats/svm0/';
+          this.page.identifier = 'post/thinkstats/svm0/';
+          this.page.title = '我所理解的 SVM（支持向量机）- 1';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

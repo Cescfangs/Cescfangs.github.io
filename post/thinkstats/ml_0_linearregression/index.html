@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MachineLearning,Stats,LinearRegression," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="机器学习要解决的问题，可以分为回归（Regression）和分类（Classification）两种类型，为了解决这些问题，数据科学领域的专家们研究出了很多算法，线性回归很可能是其中最简单的一种，而工作、生活中许多简单问题往往用不上多么复杂的模型，让我们从最简单的线性回归说起。">
+<meta name="keywords" content="MachineLearning,Stats,LinearRegression">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从线性回归说起">
+<meta property="og:url" content="http://fangs.in/post/thinkstats/ml_0_linearregression/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="机器学习要解决的问题，可以分为回归（Regression）和分类（Classification）两种类型，为了解决这些问题，数据科学领域的专家们研究出了很多算法，线性回归很可能是其中最简单的一种，而工作、生活中许多简单问题往往用不上多么复杂的模型，让我们从最简单的线性回归说起。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/LinearRegression/cost.png">
+<meta property="og:updated_time" content="2017-08-28T03:08:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从线性回归说起">
+<meta name="twitter:description" content="机器学习要解决的问题，可以分为回归（Regression）和分类（Classification）两种类型，为了解决这些问题，数据科学领域的专家们研究出了很多算法，线性回归很可能是其中最简单的一种，而工作、生活中许多简单问题往往用不上多么复杂的模型，让我们从最简单的线性回归说起。">
+<meta name="twitter:image" content="http://fangs.in/images/LinearRegression/cost.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/thinkstats/ml_0_linearregression/"/>
+
+
+
+
+
+  <title>从线性回归说起 | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/thinkstats/ml_0_linearregression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从线性回归说起</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-02T15:31:00+08:00">
+                2016-10-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thinkstats/" itemprop="url" rel="index">
+                    <span itemprop="name">thinkstats</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/thinkstats/ml_0_linearregression/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/thinkstats/ml_0_linearregression/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>机器学习要解决的问题，可以分为回归（Regression）和分类（Classification）两种类型，为了解决这些问题，数据科学领域的专家们研究出了很多算法，线性回归很可能是其中最简单的一种，而工作、生活中许多简单问题往往用不上多么复杂的模型，让我们从最简单的线性回归说起。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="线性回归快速过一遍">线性回归：快速过一遍</h3>
+<p>现在我们有一堆数据 <span class="math inline">\((X, y)\)</span> ，<span class="math inline">\(X\)</span> 是研究对象的特征，<span class="math inline">\(y\)</span> 是想要知道的结果，比如我们想要根据身高（<span class="math inline">\(X\)</span>）来预测体重（<span class="math inline">\(y\)</span>），假设他们之间有较强的线性关系，那么我们可以用一条直线来拟合这些数据点：</p>
+<p><span class="math display">\[
+h_\theta=\theta_0+\theta_1x_1=X^T\theta
+\]</span></p>
+<p>其中 <span class="math inline">\(\theta\)</span> 是<span class="math inline">\(2\times1\)</span> 阶矢量</p>
+<p><span class="math display">\[
+\theta=\left[ 
+\begin{matrix}
+\theta_0\\  \theta_1
+  \end{matrix}\right]
+\]</span></p>
+<p><span class="math inline">\(X^T\)</span> 表示<span class="math inline">\(X\)</span>的转置矩阵（<span class="math inline">\(m\times2\)</span>, <span class="math inline">\(m\)</span> 是训练的数据量，<span class="math inline">\(x_i^j\)</span> 表示的是第 <span class="math inline">\(j\)</span> 个数据的第 <span class="math inline">\(i\)</span> 个特征），其中<span class="math display">\[X^T\]</span> 第一列的所有数据都是1（因为 <span class="math inline">\(\theta_0\)</span> 的系数是1）:</p>
+<p><span class="math display">\[
+X^T=\left[\begin{matrix}
+x_0^1, x_1^1\\
+x_0^2, x_1^2\\
+...\\
+x_0^m, x_1^m\\
+\end{matrix}\right]
+\]</span></p>
+<p>在已知 <span class="math inline">\(\theta\)</span> 时，我们可以根据下式预测某个数据 <span class="math inline">\(x^{(i)}\)</span> 对应的 <span class="math inline">\(y^{(i)}\)</span>：</p>
+<p><span class="math display">\[
+y^{(i)}=h_\theta(x^{(i)})=\theta_0+\theta_1x_1^{(i)}=\theta^Tx^{(i)}
+\]</span></p>
+<p>既然是拟合的直线，其结果和实际的数据就会存在偏差，我们用损失函数（Cost Function）来表示预测值（<span class="math inline">\(h_\theta\)</span>）与实际值（<span class="math inline">\(y\)</span>）的偏离程度：</p>
+<p><span class="math display">\[
+J(\theta)=\frac{1}{2m}\sum_{i=1}^{m} (h_\theta(x^{(i)})-y^{(i)})^2
+\]</span></p>
+<p>你可能会感到奇怪，为什么分母是 <span class="math inline">\(2m\)</span> 而不是 <span class="math inline">\(m\)</span> ? 这并没什么特别的理由，只是在求损失函数的偏微分时可以和指数2结合，使最后的结果更加简洁（往下看就知道了，理论上分母是 <span class="math inline">\(m, 2m, 20m\)</span> 都可以）。</p>
+<p>为了使预测值尽可能接近实际值，我们要让 <span class="math inline">\(J(\theta)\)</span> 达到最小值，数学上可以证明如果 <span class="math inline">\(J(\theta)\)</span> 存在极值，那么一定在<span class="math inline">\(\frac{\partial J(\theta)}{\partial \theta}=0\)</span> 时得到，<span class="math inline">\(\frac{\partial J(\theta)}{\partial \theta}\)</span> 其实就是 <span class="math inline">\(J(\theta)\)</span> 函数的梯度，或者更通俗一点，斜率。在机器学习里，使用梯度下降算法更新参数 <span class="math inline">\(\theta\)</span> 是很常见的：</p>
+<p><span class="math display">\[
+\theta_j = \theta_j-\alpha\frac{\partial J}{\partial \theta_j}=\theta_j-\frac{\alpha}{m}\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_j
+\]</span></p>
+<p>上式的 <span class="math inline">\(\alpha\)</span> 取正值，给定了下降的速度，你也可以理解为机器学习的速度，显然 <span class="math inline">\(\alpha\)</span> 越大，梯度下降的越快，但这通常并不是一件好事，过大的下降速度往往会导致迭代算法直接略过最优点从而无法收敛。如果你不断用合理的 <span class="math inline">\(\alpha\)</span> 上式进行迭代，损失函数的值最后会无限接近于极值点。</p>
+<p>我们当然可以用一个循环遍历 <span class="math inline">\(\theta_{j=1:n}\)</span> （本例中 <span class="math inline">\(n=2\)</span> ），当 <span class="math inline">\(n\)</span> 很大时，使用循环来遍历很花时间，实际应用都会用矩阵计算来提升效率：</p>
+<p><span class="math display">\[
+\theta=\theta-\frac{\alpha}{m}[\sum_{i=1}^{m}(X^T\theta-y)]X
+\]</span></p>
+<p>上式中的 <span class="math inline">\(\sum\)</span> 表示将 <span class="math inline">\(X^T\theta-y\)</span> 的所有元素相加，这种一次同时更新所有参数的形式叫做批量梯度下降法（Batch gradient descent），不断重复直至 <span class="math inline">\(\theta\)</span> 收敛。(建议自己推导一下「=」右边的矩阵计算出来的结果是什么)</p>
+<p>我用很短的篇幅简单介绍了线性回归模型实现的过程，你可能注意到有很多「坑」还没填，比如损失函数是怎么来的？变量不只一个怎么办？还有其他方法可以求解线性回归的模型吗？那就请接着往下看吧。</p>
+<h3 id="多变量的线性回归">多变量的线性回归</h3>
+<p>我们之前说的根据身高（<span class="math inline">\(X\)</span>）来预测体重（<span class="math inline">\(y\)</span>）是一个单变量的线性回归问题，我想用身高+性别来预测体重怎么办？其实非常简单，引入新的特征 <span class="math inline">\(x_2\)</span> 表示性别（1表示男性，-1表示女性）即可，此时对应的「直线」是：</p>
+<p><span class="math display">\[
+h_\theta=\theta_0+\theta_1x_1+\theta_2x_2=X^T\theta
+\]</span></p>
+<p>其中 <span class="math inline">\(\theta\)</span> 是<span class="math inline">\(3 \times1\)</span> 阶矢量</p>
+<p><span class="math display">\[
+\theta=\left[ 
+\begin{matrix}
+\theta_0\\  \theta_1\\ \theta_2
+  \end{matrix}\right]
+\]</span></p>
+<p><span class="math inline">\(X^T\)</span> （<span class="math inline">\(m\times3\)</span>）:</p>
+<p><span class="math display">\[
+X^T=\left[\begin{matrix}
+x_0^1, x_1^1,x_2^1\\
+x_0^2, x_1^2,x_2^2\\
+...\\
+x_0^m, x_1^m,x_2^m\\
+\end{matrix}\right]
+\]</span></p>
+<p>将公式中的 <span class="math inline">\(\theta\)</span> 和 <span class="math inline">\(X\)</span> 用新的矩阵代替即可，当变量继续增加时，我们只要相应地修改矩阵即可，非常的简单。</p>
+<h3 id="损失函数是怎么来的">损失函数是怎么来的</h3>
+<p>我们先定义模型预测的误差 <span class="math inline">\(\epsilon^{(i)}=y^{(i)}-h_{\theta}(x^{(i)})\)</span>，对于误差 $^{(i)} $，假设其服从正态分布： <span class="math display">\[
+\epsilon^{(i)} \sim\mathcal{N}(0,\sigma^2)
+\]</span> 根据正态分布的性质，我们知道 <span class="math inline">\(y^{(i)} \sim\mathcal{N}(h_{\theta}(x^{(i)}),\sigma^2)\)</span>，据此写出<span class="math inline">\(y^{(i)}\)</span> 的概率密度函数： <span class="math display">\[
+p(y^{(i)}|x^{(i)};\theta)=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(i)}-h_{\theta}(x^{(i)})^2}{2\sigma^2}}
+\]</span> 让我们来捋一捋，这里 <span class="math inline">\(p\)</span> 描述的是以 <span class="math inline">\(\theta\)</span> 为参数，在 <span class="math inline">\(x^{(i)}\)</span> 已知的情况下，预测结果等于 <span class="math inline">\(y^{(i)}\)</span> 的概率，注意只针对 <span class="math inline">\((x^{(i)}, y^{(i)})\)</span> 这一个数据，我们关心的是对于所有的训练数据，预测结果全中的概率，考虑到训练数据之间相互独立，所有训练数据预测结果都对的概率为： <span class="math display">\[
+p=\prod_{i=1}^{m}p(y^{(i)}|x^{(i)};\theta)
+\]</span> 接下来要做的就是让这个概率尽可能的大。熟悉的味道，已知结果 <span class="math inline">\(y^{(i)}=h_{\theta}(x^{(i)})\)</span>，参数 <span class="math inline">\(\theta\)</span> 未定，此处需要进行最大似然估计，如果你看过我之前的文章<a href="http://fangs.in/post/thinkstats/likelihood">似然与极大似然估计</a>，下面这一步是无比顺溜的： <span class="math display">\[
+\begin{split}
+\mathcal{L}&amp;=\prod_{i=1}^{m}p(y^{(i)}|x^{(i)};\theta)\\
+&amp;=\prod_{i=1}^{m}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(i)}-h_{\theta}(x^{(i)})^2}{2\sigma^2}}\\
+\end{split}
+\]</span> 将 <span class="math inline">\(\mathcal{L}\)</span> 进行对数化： <span class="math display">\[
+\begin{split}
+\log{\mathcal{L}}&amp;=\sum_{i=1}^{m}\log{\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(i)}-h_{\theta}(x^{(i)})^2}{2\sigma^2}}}\\
+&amp;=\sum_{i=1}^{m}\left(\log{\frac{1}{\sqrt{2\pi}\sigma}+\log{e^{-\frac{(y^{(i)}-h_{\theta}(x^{(i)})^2}{2\sigma^2}}}}\right)\\
+&amp;=m\log{\frac{1}{\sqrt{2\pi}\sigma}}-\sum_{i=1}^{m}\frac{(y^{(i)}-h_{\theta}(x^{(i)})^2}{2\sigma^2}\\
+&amp;=const-\frac{1}{\sigma^2}\cdot\frac{1}{2}\sum_{i=1}^{m}(y^{(i)}-\theta^Tx^{(i)})^2
+\end{split}
+\]</span> 最大化似然函数 <span class="math inline">\(\mathcal{L}\)</span> 等价于最小化 <span class="math inline">\(\frac{1}{2}\sum_{i=1}^{m}(y^{(i)}-\theta^Tx^{(i)})^2\)</span> ,也等价于最小化 <span class="math inline">\(\frac{1}{2m}\sum_{i=1}^{m}(y^{(i)}-\theta^Tx^{(i)})^2\)</span>，正是我们在上一节所说的损失函数。</p>
+<blockquote>
+<p>通过这一部分的推导，我们发现所谓的梯度下降使损失函数最小化的过程实质上是最大化似然函数的过程。</p>
+</blockquote>
+<h3 id="为什么梯度下降法能减小损失函数">为什么梯度下降法能减小损失函数</h3>
+<p>考虑 <span class="math inline">\(\theta_j\)</span> 的迭代过程（变量只有一个），损失函数是一个存在极小值点的二次函数，用初中生都能听懂的话来说就是一条开口向上的抛物线：</p>
+<div class="figure">
+<img src="../../../images/LinearRegression/cost.png">
+
+</div>
+<ol style="list-style-type: decimal">
+<li>当起点在右侧时，<span class="math inline">\(\frac{\partial J}{\partial \theta_j}&gt;0\)</span>， 要损失函数降低就必须让 <span class="math inline">\(\theta_j\)</span>减小以接近极值点，此时<span class="math inline">\(\theta_j^{new} = \theta_j-\alpha\frac{\partial J}{\partial \theta_j}&lt;\theta_j\)</span> ；</li>
+<li>当起点在左侧时，<span class="math inline">\(\frac{\partial J}{\partial \theta_j}&lt;0\)</span>， 要损失函数降低就必须让 <span class="math inline">\(\theta_j\)</span>增大以接近极值点，此时<span class="math inline">\(\theta_j^{new} = \theta_j-\alpha\frac{\partial J}{\partial \theta_j}&gt;\theta_j\)</span> ；</li>
+</ol>
+<p>综上，我们发现在梯度下降算法里，<strong>梯度的正负可以告知我们现在的点位于损失函数的哪一边</strong>，为我们确定下一步迭代的方向，增大还是减小；而迭代的幅度其实是由 <span class="math inline">\(\alpha\)</span> 控制的，<span class="math inline">\(\alpha\)</span> 的值越小，算法收敛的可能性越高，而且结果越接近理论值，但是迭代的幅度相应也越小，<strong>高精度是以更多的迭代次数为代价的</strong>。</p>
+<h3 id="正规方程-normal-equation">正规方程 Normal Equation</h3>
+<p>除了用梯度下降法求解极值点以外，对于简单的现象问题还可以直接用线性方程求解，它的好处是无需迭代、不用担心 <span class="math inline">\(\alpha\)</span> 的大小问题，让我们回到损失函数先： <span class="math display">\[
+J(\theta)=\frac{1}{2m}\sum_{i=1}^{m} (h_\theta(x^{(i)})-y^{(i)})^2
+\]</span></p>
+<p>将上式写成矩阵的形式： ​ <span class="math display">\[
+\begin{split}
+J&amp;=\frac{1}{2m}\sum_{i=1}^{m} (h_\theta(x^{(i)})-y^{(i)}) \cdot(h_\theta(x^{(i)})-y^{(i)})\\
+&amp;=\frac{1}{2m}(X\theta-y)^T(X\theta-y)
+\end{split}
+\]</span> <span class="math inline">\(J\)</span> 最后的结果是一个数，但也可以理解为<span class="math inline">\(1\times 1\)</span> 的矩阵，我们知道要求得损失函数的极小值需要令 <span class="math inline">\(J\)</span> 的梯度为0，由于 <span class="math inline">\(m\)</span> 并不影响 <span class="math inline">\(J\)</span> 的极值点，我们对 <span class="math inline">\(\frac{1}{2}(X\theta-y)^T(X\theta-y)\)</span> 求极值即可： <span class="math display">\[
+\begin{split}
+\nabla_\theta J&amp;=\frac{1}{2}\nabla_\theta(X\theta-y)^T(X\theta-y)\\
+&amp;=\frac{1}{2}\nabla_\theta(\theta^TX^T-y^T)(X\theta-y)\\
+&amp;=\frac{1}{2}\nabla_\theta(\theta^TX^TX\theta-y^TX\theta-\theta^TX^Ty+y^Ty)\\
+&amp;=\frac{1}{2}\nabla_\theta(\theta^TX^TX\theta-y^TX\theta-\theta^TX^Ty)\\
+&amp;=\frac{1}{2}\nabla_\theta \text{tr}(\theta^TX^TX\theta-y^TX\theta-\theta^TX^Ty)\\
+&amp;=\frac{1}{2}\nabla_\theta (\text{tr} \theta^TX^TX\theta-2\text{tr} y^TX\theta)\\
+&amp;=\frac{1}{2}(2X^TX\theta-2X^Ty)\\
+&amp;=X^TX\theta-X^Ty\\
+\end{split}
+\]</span> ps. 上式的推导过程需要用到矩阵的迹（trace）相关性质以及矩阵函数求导的知识，限于本文的篇幅这里不再介绍，有需要的话可以参阅 Andrew Ng 的<a href="http://cs229.stanford.edu/notes/cs229-notes1.ps" target="_blank" rel="external">讲义</a>。</p>
+<p>令 <span class="math inline">\(\nabla_\theta J=0\)</span>，可以得到下式： <span class="math display">\[
+\begin{split}
+&amp;X^TX\theta-X^Ty=0\\
+\Leftrightarrow &amp;X^TX\theta=X^Ty\\
+\Leftrightarrow&amp;\theta=(X^TX)^{-1}X^Ty\\
+\end{split}
+\]</span> 正规方程求得的是解析解，无需迭代，也不需要进行 feature scaling，看上去简直完美，相比之下梯度下降算法毫无可取之处？理想丰满抵不过现实残酷，求解正规方程需要求矩阵的逆，学过线性代数的同学都知道不是所有的矩阵都能求逆，而且求逆也是一个很花时间的过程（<span class="math inline">\((X^TX)^{-1}\)</span> 的求解复杂度为 <span class="math inline">\(o(n^3)\)</span>），在矩阵很大时，求逆的计算量往往大于梯度下降算法，因此实际问题还是以梯度下降这种迭代方法为主，当研究对象的特征较小时可以考虑使用正规方程求解。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/linearregression/" rel="tag"># LinearRegression</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/thinkstats/svm0/" rel="next" title="我所理解的 SVM（支持向量机）- 1">
+                <i class="fa fa-chevron-left"></i> 我所理解的 SVM（支持向量机）- 1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/thinkstats/svm1/" rel="prev" title="我所理解的SVM(支持向量机)2——核函数的应用">
+                我所理解的SVM(支持向量机)2——核函数的应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#线性回归快速过一遍"><span class="nav-number">1.</span> <span class="nav-text">线性回归：快速过一遍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多变量的线性回归"><span class="nav-number">2.</span> <span class="nav-text">多变量的线性回归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#损失函数是怎么来的"><span class="nav-number">3.</span> <span class="nav-text">损失函数是怎么来的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么梯度下降法能减小损失函数"><span class="nav-number">4.</span> <span class="nav-text">为什么梯度下降法能减小损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正规方程-normal-equation"><span class="nav-number">5.</span> <span class="nav-text">正规方程 Normal Equation</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/thinkstats/ml_0_linearregression/';
+          this.page.identifier = 'post/thinkstats/ml_0_linearregression/';
+          this.page.title = '从线性回归说起';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
