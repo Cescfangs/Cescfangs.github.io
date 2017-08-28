@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tec,Python,Delaunay Triangulation," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Delaunay Triangulation 是一种空间划分的方法，它能使得分割形成的三角形最小的角尽可能的大，关于 Delaunay Triangulation 的详细介绍，请参考这里，Delaunay Triangulation在很多领域都有应用，科学计算领域它是有限元和有限体积法划分网格的重要方法，除此之外在图像识别、视觉艺术等领域也有它的身影。 贴一段有趣的油管视频，用 Delaunay">
+<meta name="keywords" content="Tec,Python,Delaunay Triangulation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Python 实现 Delaunay Triangulation">
+<meta property="og:url" content="http://fangs.in/post/python/pythondelaunay/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="Delaunay Triangulation 是一种空间划分的方法，它能使得分割形成的三角形最小的角尽可能的大，关于 Delaunay Triangulation 的详细介绍，请参考这里，Delaunay Triangulation在很多领域都有应用，科学计算领域它是有限元和有限体积法划分网格的重要方法，除此之外在图像识别、视觉艺术等领域也有它的身影。 贴一段有趣的油管视频，用 Delaunay">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://fangs.in/images/PythonDelaunay/Delaunay.png">
+<meta property="og:updated_time" content="2017-08-28T04:31:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用 Python 实现 Delaunay Triangulation">
+<meta name="twitter:description" content="Delaunay Triangulation 是一种空间划分的方法，它能使得分割形成的三角形最小的角尽可能的大，关于 Delaunay Triangulation 的详细介绍，请参考这里，Delaunay Triangulation在很多领域都有应用，科学计算领域它是有限元和有限体积法划分网格的重要方法，除此之外在图像识别、视觉艺术等领域也有它的身影。 贴一段有趣的油管视频，用 Delaunay">
+<meta name="twitter:image" content="http://fangs.in/images/PythonDelaunay/Delaunay.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/python/pythondelaunay/"/>
+
+
+
+
+
+  <title>用 Python 实现 Delaunay Triangulation | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/python/pythondelaunay/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用 Python 实现 Delaunay Triangulation</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-30T22:07:00+08:00">
+                2016-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/python/pythondelaunay/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/python/pythondelaunay/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Delaunay Triangulation 是一种空间划分的方法，它能使得分割形成的三角形最小的角尽可能的大，关于 Delaunay Triangulation 的详细介绍，请<a href="https://en.wikipedia.org/wiki/Delaunay_triangulation" target="_blank" rel="external">参考这里</a>，Delaunay Triangulation在很多领域都有应用，科学计算领域它是有限元和有限体积法划分网格的重要方法，除此之外在图像识别、视觉艺术等领域也有它的身影。 贴一段有趣的油管视频，用 Delaunay Triangulation 进行人脸识别的演示：<a href="https://www.youtube.com/watch?v=GGx8gxp9LyY" target="_blank" rel="external">Delaunay Triangulation and Voronoi Diagram in OpenCV</a> 接下来写一下怎么用 Python 实现 Delaunay Triangulation，需要用到的模块有<code>Numpy</code>, <code>Matplotlib</code> 和 <code>Scipy</code>，基本的思路是随机制造几个点，然后利用<code>scipy.spatial.Delaunay</code>对这些点进行处理配对三角形，最后用<code>matplotlib</code>的<code>tripcolor</code>(填充三角形颜色，如果不需要填充颜色，可以用<code>triplot</code>).</p>
+<a id="more"></a>
+<p>下面贴上代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> scipy.spatial <span class="keyword">import</span> Delaunay</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"></div><div class="line"><span class="comment"># Triangle Settings</span></div><div class="line">width = <span class="number">200</span></div><div class="line">height = <span class="number">40</span></div><div class="line">pointNumber = <span class="number">1000</span></div><div class="line">points = np.zeros((pointNumber, <span class="number">2</span>))</div><div class="line">points[:, <span class="number">0</span>] = np.random.randint(<span class="number">0</span>, width, pointNumber)</div><div class="line">points[:, <span class="number">1</span>] = np.random.randint(<span class="number">0</span>, height, pointNumber)</div><div class="line"></div><div class="line"><span class="comment"># Use scipy.spatial.Delaunay for Triangulation</span></div><div class="line">tri = Delaunay(points)</div><div class="line"></div><div class="line"><span class="comment"># Plot Delaunay triangle with color filled</span></div><div class="line">center = np.sum(points[tri.simplices], axis=<span class="number">1</span>)/<span class="number">3.0</span></div><div class="line">color = np.array([(x - width/<span class="number">2</span>)**<span class="number">2</span> + (y - height/<span class="number">2</span>)**<span class="number">2</span> <span class="keyword">for</span> x, y <span class="keyword">in</span> center])</div><div class="line">plt.figure(figsize=(<span class="number">7</span>, <span class="number">3</span>))</div><div class="line">plt.tripcolor(points[:, <span class="number">0</span>], points[:, <span class="number">1</span>], tri.simplices.copy(), facecolors=color, edgecolors=<span class="string">'k'</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># Delete ticks, axis and background</span></div><div class="line">plt.tick_params(labelbottom=<span class="string">'off'</span>, labelleft=<span class="string">'off'</span>, left=<span class="string">'off'</span>, right=<span class="string">'off'</span>,</div><div class="line">                bottom=<span class="string">'off'</span>, top=<span class="string">'off'</span>)</div><div class="line">ax = plt.gca()</div><div class="line">ax.spines[<span class="string">'right'</span>].set_color(<span class="string">'none'</span>)</div><div class="line">ax.spines[<span class="string">'bottom'</span>].set_color(<span class="string">'none'</span>)</div><div class="line">ax.spines[<span class="string">'left'</span>].set_color(<span class="string">'none'</span>)</div><div class="line">ax.spines[<span class="string">'top'</span>].set_color(<span class="string">'none'</span>)</div><div class="line"></div><div class="line"><span class="comment"># Save picture</span></div><div class="line">plt.savefig(<span class="string">'Delaunay.png'</span>, transparent=<span class="keyword">True</span>, dpi=<span class="number">600</span>)</div></pre></td></tr></table></figure>
+<p>贴上结果：</p>
+<div class="figure">
+<img src="../../../images/PythonDelaunay/Delaunay.png">
+
+</div>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tec/" rel="tag"># Tec</a>
+          
+            <a href="/tags/python/" rel="tag"># Python</a>
+          
+            <a href="/tags/delaunay-triangulation/" rel="tag"># Delaunay Triangulation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/python/numpy-advancement-sum/" rel="next" title="numpy进阶应用--求和">
+                <i class="fa fa-chevron-left"></i> numpy进阶应用--求和
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/python/pythonic/" rel="prev" title="用好这几招，让你的代码洋溢着 Pythonic 的味道">
+                用好这几招，让你的代码洋溢着 Pythonic 的味道 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/python/pythondelaunay/';
+          this.page.identifier = 'post/python/pythondelaunay/';
+          this.page.title = '用 Python 实现 Delaunay Triangulation';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

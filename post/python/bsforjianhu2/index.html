@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tec,Stats,Python,BeautifulSoup," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="上一篇的笔记中我们学习了如何通过 BeautifulSoup 获取简书作者的基本信息，这篇将按照同样的思路，用BeautifulSoup获取作者文章的信息（阅读次数、评论数、喜欢数和打赏次数）。">
+<meta name="keywords" content="Tec,Stats,Python,BeautifulSoup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeautifulSoup 实战（二）:获取文章详细信息">
+<meta property="og:url" content="http://fangs.in/post/python/bsforjianhu2/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="上一篇的笔记中我们学习了如何通过 BeautifulSoup 获取简书作者的基本信息，这篇将按照同样的思路，用BeautifulSoup获取作者文章的信息（阅读次数、评论数、喜欢数和打赏次数）。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-08-28T04:20:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BeautifulSoup 实战（二）:获取文章详细信息">
+<meta name="twitter:description" content="上一篇的笔记中我们学习了如何通过 BeautifulSoup 获取简书作者的基本信息，这篇将按照同样的思路，用BeautifulSoup获取作者文章的信息（阅读次数、评论数、喜欢数和打赏次数）。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/python/bsforjianhu2/"/>
+
+
+
+
+
+  <title>BeautifulSoup 实战（二）:获取文章详细信息 | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/python/bsforjianhu2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BeautifulSoup 实战（二）:获取文章详细信息</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-07T23:20:00+08:00">
+                2016-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/python/bsforjianhu2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/python/bsforjianhu2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇的笔记中我们学习了如何通过 BeautifulSoup 获取简书作者的基本信息，这篇将按照同样的思路，用BeautifulSoup获取作者文章的信息（阅读次数、评论数、喜欢数和打赏次数）。</p>
+</blockquote>
+<a id="more"></a>
+<p>和之前一样，做好准备工作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</div><div class="line"><span class="keyword">import</span> requests</div><div class="line">url = <span class="string">'http://www.jianshu.com/users/65ed1c462691/top_articles'</span></div><div class="line">header = &#123;<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0'</span>&#125;</div><div class="line">response = requests.get(url, headers=header)</div><div class="line">html = response.text</div></pre></td></tr></table></figure>
+<p>上面的过程把作者的主页内容存储在了<code>html</code>中，接下来就是 <code>BeautifulSoup</code> 登场的时候了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">soup = BeautifulSoup(html, <span class="string">'lxml'</span>)</div></pre></td></tr></table></figure>
+<p>我还是挑选重要的东西贴上来：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line"><span class="tag">&lt;<span class="name">h4</span> <span class="attr">class</span>=<span class="string">"title"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/829477353cd3"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span>Python 代码就该是这种味道<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">h4</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-footer"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/829477353cd3"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span></div><div class="line">          阅读 1817</div><div class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/829477353cd3#comments"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span></div><div class="line">           · 评论 36</div><div class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span> · 喜欢 82<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"have-img"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"wrap-img"</span> <span class="attr">href</span>=<span class="string">"/p/308fea12c8f8"</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">"300"</span> <span class="attr">src</span>=<span class="string">"http://upload-images.jianshu.io/upload_images/1244841-0afbbb345c55bf48.png?imageMogr2/auto-orient/strip%7CimageView2/1/w/300/h/300"</span>/&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"list-top"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"author-name blue-link"</span> <span class="attr">href</span>=<span class="string">"/users/65ed1c462691"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span>Cescfangs<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">em</span>&gt;</span>·<span class="tag">&lt;/<span class="name">em</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"time"</span> <span class="attr">data-shared-at</span>=<span class="string">"2016-04-15T18:19:52+08:00"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h4</span> <span class="attr">class</span>=<span class="string">"title"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/308fea12c8f8"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span>PyQt5学习笔记（一）： 来创建第一个PyQt应用吧！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">h4</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-footer"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/308fea12c8f8"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span></div><div class="line">          阅读 398</div><div class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/p/308fea12c8f8#comments"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span></div><div class="line">           · 评论 3</div><div class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span> · 喜欢 15<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>发现了什么？所有文章的题目都是在<code>&lt;h4&gt;</code>标签里，而文章的数据信息都是在<code>&lt;div class=&quot;list-footer&quot;&gt;</code>标签里，我们先把文章题目找出来：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">h4 = soup.find_all(<span class="string">'h4'</span>)</div></pre></td></tr></table></figure>
+<p>结果是这样子的：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[&lt;h4 class="title"&gt;&lt;a href="/p/829477353cd3" target="_blank"&gt;Python 代码就该是这种味道&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/308fea12c8f8" target="_blank"&gt;PyQt5学习笔记（一）： 来创建第一个PyQt应用吧！&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/7fbecf5255f0" target="_blank"&gt;Python-matplotlib：快速入门教程&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/09994c9d8489" target="_blank"&gt;混合编程：用 C 语言来扩展 Python 大法吧！&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/d0e4f2f6e72e" target="_blank"&gt; PyQt5学习笔记（八）：工具栏、菜单栏、状态栏整合&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/8fc44cea9bd8" target="_blank"&gt;PyQt5学习笔记（五）：弹出对话框请求确认&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/cd190dbf0435" target="_blank"&gt;可能会有用的Clion技巧—— Mac篇&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/c0b42c36aff4" target="_blank"&gt;PyQt5学习笔记（六）：创建菜单栏&lt;/a&gt;&lt;/h4&gt;,</div><div class="line"> &lt;h4 class="title"&gt;&lt;a href="/p/55aec1eaa35e" target="_blank"&gt;PyQt5学习笔记（四）：退出按钮&lt;/a&gt;&lt;/h4&gt;]</div></pre></td></tr></table></figure>
+<p>通过列表推导简单处理一下数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">h4_title = [item.string <span class="keyword">for</span> item <span class="keyword">in</span> h4]</div><div class="line">h4_title</div><div class="line"></div><div class="line"><span class="string">'''</span></div><div class="line"><span class="string">['Python 代码就该是这种味道',</span></div><div class="line"><span class="string"> 'PyQt5学习笔记（一）： 来创建第一个PyQt应用吧！',</span></div><div class="line"><span class="string"> 'Python-matplotlib：快速入门教程',</span></div><div class="line"><span class="string"> '混合编程：用 C 语言来扩展 Python 大法吧！',</span></div><div class="line"><span class="string"> ' PyQt5学习笔记（八）：工具栏、菜单栏、状态栏整合',</span></div><div class="line"><span class="string"> 'PyQt5学习笔记（五）：弹出对话框请求确认',</span></div><div class="line"><span class="string"> '可能会有用的Clion技巧—— Mac篇',</span></div><div class="line"><span class="string"> 'PyQt5学习笔记（六）：创建菜单栏',</span></div><div class="line"><span class="string"> 'PyQt5学习笔记（四）：退出按钮']</span></div><div class="line"><span class="string"> '''</span></div></pre></td></tr></table></figure>
+<p>文章的题目已经提取好了，接下来去寻找所有的<code>&lt;div class=&quot;list-footer&quot;&gt;</code>标签，和上面的方法一样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">list_footer = soup.find_all(<span class="string">'div'</span>, class_=<span class="string">'list-footer'</span>)</div><div class="line">list_footer</div><div class="line"><span class="string">''''内容稍多，贴一部分</span></div><div class="line"><span class="string">[&lt;div class="list-footer"&gt;</span></div><div class="line"><span class="string"> &lt;a href="/p/829477353cd3" target="_blank"&gt;</span></div><div class="line"><span class="string">           阅读 1817</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;a href="/p/829477353cd3#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">            · 评论 36</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;span&gt; · 喜欢 82&lt;/span&gt;</span></div><div class="line"><span class="string"> &lt;/div&gt;, &lt;div class="list-footer"&gt;</span></div><div class="line"><span class="string"> &lt;a href="/p/308fea12c8f8" target="_blank"&gt;</span></div><div class="line"><span class="string">           阅读 398</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;a href="/p/308fea12c8f8#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">            · 评论 3</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;span&gt; · 喜欢 15&lt;/span&gt;</span></div><div class="line"><span class="string"> &lt;/div&gt;, &lt;div class="list-footer"&gt;</span></div><div class="line"><span class="string"> &lt;a href="/p/7fbecf5255f0" target="_blank"&gt;</span></div><div class="line"><span class="string">           阅读 361</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;a href="/p/7fbecf5255f0#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">            · 评论 4</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;span&gt; · 喜欢 13&lt;/span&gt;</span></div><div class="line"><span class="string"> &lt;/div&gt;, &lt;div class="list-footer"&gt;</span></div><div class="line"><span class="string"> &lt;a href="/p/09994c9d8489" target="_blank"&gt;</span></div><div class="line"><span class="string">           阅读 274</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;a href="/p/09994c9d8489#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">            · 评论 3</span></div><div class="line"><span class="string"> &lt;/a&gt; &lt;span&gt; · 喜欢 10&lt;/span&gt;</span></div><div class="line"><span class="string"> &lt;span&gt; · 打赏 1&lt;/span&gt;</span></div><div class="line"><span class="string"> &lt;/div&gt;,</span></div><div class="line"><span class="string"> ...]'''</span><span class="string">'</span></div></pre></td></tr></table></figure>
+<p>情况比之前的稍微复杂一点，阅读和评论在<code>&lt;a&gt;</code>标签里，而喜欢和打赏却在<code>&lt;span&gt;</code>标签里，还好BeautifulSoup的find_all可以添加多个参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">list_footer_list = [item.find_all([<span class="string">'a'</span>,<span class="string">'span'</span>]) <span class="keyword">for</span> item <span class="keyword">in</span> list_footer]</div><div class="line">list_footer_list</div><div class="line"><span class="string">'''</span></div><div class="line"><span class="string">[[&lt;a href="/p/829477353cd3" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 1817</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/829477353cd3#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 36</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 82&lt;/span&gt;], [&lt;a href="/p/308fea12c8f8" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 398</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/308fea12c8f8#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 3</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 15&lt;/span&gt;], [&lt;a href="/p/7fbecf5255f0" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 361</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/7fbecf5255f0#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 4</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 13&lt;/span&gt;], [&lt;a href="/p/09994c9d8489" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 274</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/09994c9d8489#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 3</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 10&lt;/span&gt;, &lt;span&gt; · 打赏 1&lt;/span&gt;], [&lt;a href="/p/d0e4f2f6e72e" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 167</span></div><div class="line"><span class="string">  &lt;/a&gt;,</span></div><div class="line"><span class="string">  &lt;a href="/p/d0e4f2f6e72e#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 4</span></div><div class="line"><span class="string">  &lt;/a&gt;,</span></div><div class="line"><span class="string">  &lt;span&gt; · 喜欢 6&lt;/span&gt;], [&lt;a href="/p/8fc44cea9bd8" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 114</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/8fc44cea9bd8#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 2</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 5&lt;/span&gt;], [&lt;a href="/p/cd190dbf0435" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 1057</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/cd190dbf0435#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 4</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 5&lt;/span&gt;], [&lt;a href="/p/c0b42c36aff4" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 133</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/c0b42c36aff4#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 3</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 4&lt;/span&gt;], [&lt;a href="/p/55aec1eaa35e" target="_blank"&gt;</span></div><div class="line"><span class="string">            阅读 148</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;a href="/p/55aec1eaa35e#comments" target="_blank"&gt;</span></div><div class="line"><span class="string">             · 评论 4</span></div><div class="line"><span class="string">  &lt;/a&gt;, &lt;span&gt; · 喜欢 4&lt;/span&gt;]]</span></div><div class="line"><span class="string">'''</span></div></pre></td></tr></table></figure>
+<p>BeautifulSoup提供的<code>string</code>属性可以返回标签的内容比如‘阅读 167’，在此基础上我们还是需要处理一下字符串，只保留我们想要的数字，我们先定义一个函数去掉字符串里的非数字内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">trans2numbers</span><span class="params">(string)</span>:</span></div><div class="line">    <span class="keyword">return</span> int(<span class="string">''</span>.join(a <span class="keyword">for</span> a <span class="keyword">in</span> string.strip() <span class="keyword">if</span> a.isdigit()))</div></pre></td></tr></table></figure>
+<p>还需要一个新的函数来处理<code>list_footer_list</code> ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">article_status</span><span class="params">(article_list)</span>:</span></div><div class="line">    result = []</div><div class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> article_list:</div><div class="line">        result.append(trans2numbers(item.string))</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> result</div></pre></td></tr></table></figure>
+<p>有了上面的两个函数，就可以进行列表推导来构造新的列表了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">article_status_list = [article_status(item) <span class="keyword">for</span> item <span class="keyword">in</span> list_footer_list]</div><div class="line">article_status_list</div><div class="line"><span class="string">'''</span></div><div class="line"><span class="string">[[1817, 36, 82],</span></div><div class="line"><span class="string"> [398, 3, 15],</span></div><div class="line"><span class="string"> [361, 4, 13],</span></div><div class="line"><span class="string"> [274, 3, 10, 1],</span></div><div class="line"><span class="string"> [167, 4, 6],</span></div><div class="line"><span class="string"> [114, 2, 5],</span></div><div class="line"><span class="string"> [1057, 4, 5],</span></div><div class="line"><span class="string"> [133, 3, 4],</span></div><div class="line"><span class="string"> [148, 4, 4]]</span></div><div class="line"><span class="string">'''</span></div></pre></td></tr></table></figure>
+<p>构造了一个二维的列表，每一个列表第一个数字是阅读数量，第二个是评论数，第三个是喜欢的数量，如果文章被打赏的话还会有一个打赏的数字，然后我们把数字和文章的题目对应起来：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">articles = []</div><div class="line"><span class="keyword">for</span> title, status <span class="keyword">in</span> zip(h4_title, article_status_list):</div><div class="line">    articles.append([title, status])</div><div class="line">    </div><div class="line">articles</div><div class="line"><span class="string">'''</span></div><div class="line"><span class="string">[['Python 代码就该是这种味道', [1819, 36, 82]],</span></div><div class="line"><span class="string"> ['PyQt5学习笔记（一）： 来创建第一个PyQt应用吧！', [400, 3, 15]],</span></div><div class="line"><span class="string"> ['Python-matplotlib：快速入门教程', [362, 4, 13]],</span></div><div class="line"><span class="string"> ['混合编程：用 C 语言来扩展 Python 大法吧！', [275, 3, 10, 1]],</span></div><div class="line"><span class="string"> [' PyQt5学习笔记（八）：工具栏、菜单栏、状态栏整合', [169, 4, 6]],</span></div><div class="line"><span class="string"> ['PyQt5学习笔记（五）：弹出对话框请求确认', [116, 2, 5]],</span></div><div class="line"><span class="string"> ['可能会有用的Clion技巧—— Mac篇', [1064, 4, 5]],</span></div><div class="line"><span class="string"> ['PyQt5学习笔记（六）：创建菜单栏', [135, 3, 4]],</span></div><div class="line"><span class="string"> ['PyQt5学习笔记（四）：退出按钮', [149, 4, 4]]]</span></div><div class="line"><span class="string">'''</span></div></pre></td></tr></table></figure>
+<p>大功告成!!!</p>
+<p>不知道细心如你有没有发现以上得到的文章只有九篇，但是我明明写了20篇啊啊啊！嗯嗯，其实主页的内容是分次加载的，并不会一次性把你所有的文章加载，而是采用下拉刷新的模式加载第二页第三页的内容，解决这个并不难，找到其他文章展示页的地址就行了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tec/" rel="tag"># Tec</a>
+          
+            <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/python/" rel="tag"># Python</a>
+          
+            <a href="/tags/beautifulsoup/" rel="tag"># BeautifulSoup</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/python/bsforjianshu/" rel="next" title="BeautifulSoup 实战（一）：获取简书作者信息">
+                <i class="fa fa-chevron-left"></i> BeautifulSoup 实战（一）：获取简书作者信息
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/thinkstats/likelihood/" rel="prev" title="似然与极大似然估计">
+                似然与极大似然估计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/python/bsforjianhu2/';
+          this.page.identifier = 'post/python/bsforjianhu2/';
+          this.page.title = 'BeautifulSoup 实战（二）:获取文章详细信息';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
