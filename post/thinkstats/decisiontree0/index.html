@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/决策树结构图.png">
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/tree-space.png">
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/prune.png">
-<meta property="og:updated_time" content="2017-08-28T04:17:54.000Z">
+<meta property="og:updated_time" content="2017-08-28T06:31:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="决策树系列0:你需要一棵决策树">
 <meta name="twitter:description" content="关于决策树 决策树是非常流行的一种机器学习算法，基于决策树的集成算法随机森林更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：">
@@ -392,7 +392,7 @@
 </div>
 <p>决策树的概念来自自然界中的树，树有分支、叶子、根和树干；决策树的节点根据选定的属性进行分裂，形成分支，这些分支上的节点是上一层节点的子节点，如果某节点不存在子节点（即不再向下延伸），那么这个节点就是叶子节点。每个决策树都有一个根节点（root），和树的跟一样，这是一棵决策树开始生长的起点。</p>
 <h4 id="种一棵决策树">种一棵决策树</h4>
-<p>决策树的生长意味着对数据空间的不断分割，每个叶子节点都对应于空间中的某一部分，将所有叶子节点对应的空间相加就是原来的数据空间，以二维数据空间为例，<span class="math inline">\(X\in \mathbf{X}\)</span>，有 <span class="math inline">\(X_1, X_2\)</span> 两个特征，每一次我们都选择其中一个特征进行分割，这个过程我们可以用下图形象地表示出来：</p>
+<p>决策树的生长意味着对数据空间的不断分割，每个叶子节点都对应于空间中的某一部分，将所有叶子节点对应的空间相加就是原来的数据空间，以二维数据空间为例，<span class="math inline">\(X\in \mathbf{X}\)</span>，有两个维度的特征，每一次我们都选择其中一个特征进行分割，这个过程我们可以用下图形象地表示出来：</p>
 <div class="figure">
 <img src="../../../images/decisiontree0/tree-space.png">
 
@@ -617,7 +617,7 @@ R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -628,7 +628,7 @@ R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -639,7 +639,7 @@ R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -670,6 +670,17 @@ R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L
                   
                     
                       Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/cescfangs" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-bookmark-o"></i>
+                  
+                    
+                      Zhihu
                     
                 </a>
               </span>

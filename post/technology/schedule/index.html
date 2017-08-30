@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Fortran,OpenMP,HPC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="schedule是为了更好地分配循环中任务的数量，所以也只能用于循环结构，需要注意的是指定不同的任务分配方式对于程序执行效率会有很大的影响。  schedule 总共有 static, dynamic,runtime,guided,auto五种类型（早期版本的 OpenMP 可能没有auto），static的执行效率是这几种类型里效率最高的，简单写下几种类型的特点：">
+<meta name="keywords" content="Fortran,OpenMP,HPC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenMP: schedule">
+<meta property="og:url" content="http://fangs.in/post/technology/schedule/index.html">
+<meta property="og:site_name" content="Cesco: a minimal blog">
+<meta property="og:description" content="schedule是为了更好地分配循环中任务的数量，所以也只能用于循环结构，需要注意的是指定不同的任务分配方式对于程序执行效率会有很大的影响。  schedule 总共有 static, dynamic,runtime,guided,auto五种类型（早期版本的 OpenMP 可能没有auto），static的执行效率是这几种类型里效率最高的，简单写下几种类型的特点：">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-08-30T05:22:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenMP: schedule">
+<meta name="twitter:description" content="schedule是为了更好地分配循环中任务的数量，所以也只能用于循环结构，需要注意的是指定不同的任务分配方式对于程序执行效率会有很大的影响。  schedule 总共有 static, dynamic,runtime,guided,auto五种类型（早期版本的 OpenMP 可能没有auto），static的执行效率是这几种类型里效率最高的，简单写下几种类型的特点：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fangs.in/post/technology/schedule/"/>
+
+
+
+
+
+  <title>OpenMP: schedule | Cesco: a minimal blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cesco: a minimal blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/technology/schedule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OpenMP: schedule</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-02T15:32:00+08:00">
+                2015-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/technology/schedule/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/technology/schedule/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><code>schedule</code>是为了更好地分配循环中任务的数量，所以也只能用于循环结构，需要注意的是指定不同的任务分配方式对于程序执行效率会有很大的影响。</p>
+</blockquote>
+<p><code>schedule</code> 总共有 <code>static</code>, <code>dynamic</code>,<code>runtime</code>,<code>guided</code>,<code>auto</code>五种类型（早期版本的 OpenMP 可能没有<code>auto</code>），<code>static</code>的执行效率是这几种类型里效率最高的，简单写下几种类型的特点：</p>
+<a id="more"></a>
+<ul>
+<li>static</li>
+</ul>
+<p><code>schedule(static[, chunk_size])</code> 的形式被指定以后，任务被分成n = [s/chunk_size]+1 份(s 为总循环次数，chunk_size 刚好整除 s 时为 n = s/chunk_size), 这些任务按照 thread_num 从小到大依次分配，进行循环。也就是说 thread 0 总是领到第一份任务，第五份任务（如果共有 4 个 thread 且 n&gt;4）…… 还有一点需要说明的是，所有的任务块都是相邻的，比如 <code>i=1,2,3</code>，而不可能有<code>i=1,2,5</code>这样的区块，<strong>这一点对于所有类型都是适用的，不仅限于<code>static</code></strong>。</p>
+<p>而当 chunk_size 没有指定时, 编译器会分配给各个 thread 尽可能相等的任务，所有的 thread 都只能领到一个区块。</p>
+<ul>
+<li>dynamic</li>
+</ul>
+<p><code>schedule(dynamic[, chunk_size])</code> 的形式被指定以后, 任务的分配是动态进行的，每个 thread 领到任务后执行完成再向系统领新的任务，直到所有的区块都被分派完，由于 chunk_size 不一定能整除 s，所以有可能最后一个（指循环序列<code>i</code>的顺序，而不是实际执行的顺序）区块数量少于 chunk_size。</p>
+<p>而当 chunk_size 没有指定时, 默认 chunk_size=1。</p>
+<ul>
+<li>guided</li>
+</ul>
+<p><code>schedule(guided[, chunk_size])</code>，与<code>dynamic</code>很相似，但又有很大的区别，区别在于这里的 chunk_size 是每个区块最小的任务数量（最后一个区块除外），<code>guided[, chunk_size]</code>每次分配的区块任务数量是 Max([剩余循环次数/thread 总数], chunk_size)，直到剩余的循环次数小于 chunk_size 为止。</p>
+<p>而当 chunk_size 没有指定时, 默认 chunk_size=1。</p>
+<ul>
+<li>auto</li>
+</ul>
+<p><code>schedule(guided)</code> 被指定时，如何分配任务将取决于当时的系统状况以及具体的编译器，程序将有完全的自由来选择适合的分配方式，至于这种方式是不是最合适的方式，我觉得在一般情况下应该是吧，否则也没有必要新增这个选项。</p>
+<ul>
+<li>runtime</li>
+</ul>
+<p><code>schedule(runtime)</code>被指定时，如何分配任务只有到程序执行到这个部分的时候才会决定，至于分配的具体方法和 chunk_size 的大小，会根据<code>run-sched-var</code> ICV来确定，如果 ICV 的值是<code>auto</code>，the schedule is implementation defined.（这句不知道怎么理解好，先把原文贴上来）。</p>
+<p>我写了一个嵌套循环的<code>Fortran</code>程序来加深对不同类型<code>schedule</code>的理解：</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">program</span></span> main</div><div class="line">	<span class="keyword">use</span> omp_lib</div><div class="line"></div><div class="line">	<span class="keyword">implicit</span> <span class="keyword">none</span></div><div class="line">	<span class="keyword">integer</span>:: i, j</div><div class="line"></div><div class="line">	open(<span class="keyword">file</span>=<span class="string">'schedule_test.txt'</span>, <span class="keyword">unit</span>=<span class="number">32</span>, <span class="keyword">status</span>=<span class="string">'replace'</span>)</div><div class="line"></div><div class="line">	<span class="comment">!$omp parallel do schedule(static) private(i, j)</span></div><div class="line">		<span class="keyword">do</span> i = <span class="number">1</span>, <span class="number">10</span></div><div class="line">			<span class="built_in">write</span>(<span class="number">32</span>,*),<span class="string">'i'</span>,i,omp_get_thread_num()</div><div class="line"></div><div class="line">			<span class="keyword">do</span> j = <span class="number">1</span>, i</div><div class="line">			   <span class="built_in">write</span>(<span class="number">32</span>,*), <span class="string">'j'</span>,j,omp_get_thread_num()</div><div class="line">			<span class="keyword">enddo</span></div><div class="line">		<span class="keyword">enddo</span></div><div class="line"></div><div class="line">	<span class="comment">!$omp end parallel do</span></div><div class="line"></div><div class="line">	<span class="keyword">end</span> <span class="function"><span class="keyword">program</span></span> main</div></pre></td></tr></table></figure>
+<p>从上面的程序可以看出，对于不同的循环序列<code>i</code>，工作量是不同的，<code>i</code>越大则在内层循环中的工作量越大，所以简单均分肯定会使不同 thread 的工作量相差不少，整理了一个表格对比一下不同类型的<code>schedule</code>任务执行的结果：</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">TID</th>
+<th align="center">static, 2</th>
+<th align="center">dynamic, 2</th>
+<th align="center">guided, 2</th>
+<th align="center">auto</th>
+<th align="center">runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">i=1</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="center">2</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">0</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>表中的数字是 thread_num.注意这不是实际执行的顺序，只是为了方便查看按照循环参数<code>i</code>进行排序。</p>
+<p>做一下简单的数学计算，第 i 个循环的工作量是<span class="math inline">\(1+i=i+1\)</span>, 将工作量也整理出一个简单的表格,最后计算一下不同模式下，不同 thread 的工作量：</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">TID</th>
+<th align="center">static, 2</th>
+<th align="center">dynamic, 2</th>
+<th align="center">guided, 2</th>
+<th align="center">auto</th>
+<th align="center">runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">26</td>
+<td align="center">9</td>
+<td align="center">15</td>
+<td align="center">9</td>
+<td align="center">21</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">9</td>
+<td align="center">13</td>
+<td align="center">11</td>
+<td align="center">18</td>
+<td align="center">18</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">13</td>
+<td align="center">17</td>
+<td align="center">19</td>
+<td align="center">17</td>
+<td align="center">14</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">17</td>
+<td align="center">26</td>
+<td align="center">20</td>
+<td align="center">21</td>
+<td align="center">12</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>std</strong></td>
+<td align="center">6.30</td>
+<td align="center">6.30</td>
+<td align="center">3.56</td>
+<td align="center">4.44</td>
+<td align="center">3.49</td>
+</tr>
+</tbody>
+</table>
+<p>从结果来看（std：统计分布的标准差），<code>guided</code>和<code>runtime</code>的分配较好，<code>static</code>和<code>dynamic</code>分配相对不均，当然这只是一个简单程序的分析数据，很多情况下都需要根据具体的程序选择合适的模式</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/fortran/" rel="tag"># Fortran</a>
+          
+            <a href="/tags/openmp/" rel="tag"># OpenMP</a>
+          
+            <a href="/tags/hpc/" rel="tag"># HPC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/openmp/single/" rel="next" title="OpenMP: single construct">
+                <i class="fa fa-chevron-left"></i> OpenMP: single construct
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/python/numpy-advancement-sum/" rel="prev" title="numpy进阶应用--求和">
+                numpy进阶应用--求和 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Cesc Fangs" />
+          <p class="site-author-name" itemprop="name">Cesc Fangs</p>
+           
+              <p class="site-description motion-element" itemprop="description">南山有部队，北海有火锅</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Cescfangs" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Cescfangs" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/cescfangs" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-bookmark-o"></i>
+                  
+                    
+                      Zhihu
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cesc Fangs</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://Cescfangs.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://fangs.in/post/technology/schedule/';
+          this.page.identifier = 'post/technology/schedule/';
+          this.page.title = 'OpenMP: schedule';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://Cescfangs.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
