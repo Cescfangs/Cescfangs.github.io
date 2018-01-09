@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Python,Tec,PyQt," />
+  <meta name="keywords" content="Python,Tec,Pyqt," />
 
 
 
@@ -94,21 +94,20 @@
 
 
 
-<meta name="description" content="之前在打包成App或dmg时一直提示错误如下： 12345On Mac OS X, you might be loading two sets of Qt binaries into the same process.Check that all plugins are compiled against the right Qt binaries. ExportDYLD_PRINT_LIBRARI">
-<meta name="keywords" content="Python,Tec,PyQt">
+<meta name="description" content="来创建第一个PyQt应用吧！  本文由Cescfangs译自ZetCode pyqt5系列教程并作适当修改。 之前用C++做过Qt的应用，用过一次就喜欢上了Qt，但是C++相对较难，也比较繁琐，在学习Python之后，对于PyQt开发更加感兴趣。话不多说，第一篇介绍如何创建一个简单的窗口。">
+<meta name="keywords" content="Python,Tec,Pyqt">
 <meta property="og:type" content="article">
-<meta property="og:title" content="cx_Freeze打包生成独立App">
-<meta property="og:url" content="http://fangs.in/post/python/pyqt2app/index.html">
+<meta property="og:title" content="PyQt5学习笔记（一）">
+<meta property="og:url" content="http://fangs.in/post/pyqt/pyqt/1/index.html">
 <meta property="og:site_name" content="Cesco: a minimal blog">
-<meta property="og:description" content="之前在打包成App或dmg时一直提示错误如下： 12345On Mac OS X, you might be loading two sets of Qt binaries into the same process.Check that all plugins are compiled against the right Qt binaries. ExportDYLD_PRINT_LIBRARI">
+<meta property="og:description" content="来创建第一个PyQt应用吧！  本文由Cescfangs译自ZetCode pyqt5系列教程并作适当修改。 之前用C++做过Qt的应用，用过一次就喜欢上了Qt，但是C++相对较难，也比较繁琐，在学习Python之后，对于PyQt开发更加感兴趣。话不多说，第一篇介绍如何创建一个简单的窗口。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://fangs.in/images/PyQt2App/屏幕快照%202015-07-20%2015.27.47.png">
-<meta property="og:image" content="http://fangs.in/images/PyQt2App/屏幕快照%202015-07-20%2015.28.28.png">
-<meta property="og:updated_time" content="2017-08-28T04:34:56.000Z">
+<meta property="og:image" content="http://fangs.in/images/pyqt/first.png">
+<meta property="og:updated_time" content="2018-01-09T08:44:53.724Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="cx_Freeze打包生成独立App">
-<meta name="twitter:description" content="之前在打包成App或dmg时一直提示错误如下： 12345On Mac OS X, you might be loading two sets of Qt binaries into the same process.Check that all plugins are compiled against the right Qt binaries. ExportDYLD_PRINT_LIBRARI">
-<meta name="twitter:image" content="http://fangs.in/images/PyQt2App/屏幕快照%202015-07-20%2015.27.47.png">
+<meta name="twitter:title" content="PyQt5学习笔记（一）">
+<meta name="twitter:description" content="来创建第一个PyQt应用吧！  本文由Cescfangs译自ZetCode pyqt5系列教程并作适当修改。 之前用C++做过Qt的应用，用过一次就喜欢上了Qt，但是C++相对较难，也比较繁琐，在学习Python之后，对于PyQt开发更加感兴趣。话不多说，第一篇介绍如何创建一个简单的窗口。">
+<meta name="twitter:image" content="http://fangs.in/images/pyqt/first.png">
 
 
 
@@ -137,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://fangs.in/post/python/pyqt2app/"/>
+  <link rel="canonical" href="http://fangs.in/post/pyqt/pyqt/1/"/>
 
 
 
 
 
-  <title>cx_Freeze打包生成独立App | Cesco: a minimal blog</title>
+  <title>PyQt5学习笔记（一） | Cesco: a minimal blog</title>
   
 
 
@@ -276,7 +275,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/python/pyqt2app/">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/pyqt/pyqt/1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Cesc Fangs">
@@ -293,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">cx_Freeze打包生成独立App</h1>
+          <h1 class="post-title" itemprop="name headline">PyQt5学习笔记（一）</h1>
         
 
         <div class="post-meta">
@@ -305,8 +304,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-07-20T15:18:00+08:00">
-                2015-07-20
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-03-15T21:28:00+08:00">
+                2015-03-15
               </time>
             
 
@@ -328,8 +327,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/pyqt/" itemprop="url" rel="index">
+                    <span itemprop="name">pyqt</span>
                   </a>
                 </span>
 
@@ -346,9 +345,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/post/python/pyqt2app/#comments" itemprop="discussionUrl">
+                <a href="/post/pyqt/pyqt/1/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="post/python/pyqt2app/" itemprop="commentCount"></span>
+                        data-disqus-identifier="post/pyqt/pyqt/1/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -376,14 +375,37 @@
       
 
       
-        <p>之前在打包成App或dmg时一直提示错误如下： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">On Mac OS X, you might be loading two sets of Qt binaries into the same process.</div><div class="line">Check that all plugins are compiled against the right Qt binaries. Export</div><div class="line">DYLD_PRINT_LIBRARIES=1 and check that only one set of binaries are being loaded.</div><div class="line">This application failed to start because it could not find or load the Qt</div><div class="line">platform plugin &quot;cocoa&quot;.</div></pre></td></tr></table></figure></p>
+        <blockquote>
+<p>来创建第一个PyQt应用吧！</p>
+</blockquote>
+<p>本文由<a href="http://fangs.in">Cescfangs</a>译自<a href="http://zetcode.com/gui/pyqt5/firstprograms/" target="_blank" rel="external">ZetCode pyqt5系列教程</a>并作适当修改。 之前用C++做过Qt的应用，用过一次就喜欢上了Qt，但是C++相对较难，也比较繁琐，在学习Python之后，对于PyQt开发更加感兴趣。话不多说，第一篇介绍如何创建一个简单的窗口。</p>
 <a id="more"></a>
-<p>上stackoverflow查看了一下，发现了<a href="http://stackoverflow.com/questions/25188153/this-application-failed-to-start-because-it-could-not-find-or-load-the-qt-platfo" target="_blank" rel="external">这个问题</a>，根据答主的回答，这是因为打包成app后在压缩包里和系统资源库里有两个Qt资源，app不知道从哪个可以打开，答主建议在build时采用如下命令： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 setup.py bdist_mac --qt-menu-nib=/usr/local/Cellar/qt5/5.4.2/plugins/platforms/</div></pre></td></tr></table></figure></p>
-<p>后面参数确定了要调用的是App目录的qt资源，打包App成功，但是出现了一个新的问题，用该方法打包出来的App分辨率好低： 直接运行的效果： <img src="../../../images/PyQt2App/屏幕快照%202015-07-20%2015.27.47.png"></p>
-<p>打包成独立App的效果： <img src="../../../images/PyQt2App/屏幕快照%202015-07-20%2015.28.28.png"></p>
-<p>还是在stackoverflow上找到了<a href="http://stackoverflow.com/questions/25918008/cxfreeze-produces-fuzzy-gui-on-macbook-pro-with-retina-display" target="_blank" rel="external">答案</a>根据答主的解释，打包成App时没用确定是否按照高分辨率进行输出，即在info.plist文件里缺少了<code>NSHighResolutionCapable[1]</code>参数，所以默认渣分辨率输出了。解决方法是将<code>your.app/Contents/Info.plist</code>的内容复制出来，放到<code>setup.py</code>同一级目录下，新建一个<code>Info-highres.plist</code>（名字随意）的配置文件，粘贴<code>your.app/Contents/Info.plist</code>的内容，再加上一句(也可以在Xcode中编辑，实测更加方便直观) <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;key&gt;NSHighResolutionCapable&lt;/key&gt;</div><div class="line">&lt;true/&gt;</div></pre></td></tr></table></figure></p>
-<p>然后<code>build</code>时用以下命令： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 setup.py bdist_mac --custom-info-plist Info-highres.plist</div></pre></td></tr></table></figure></p>
-<p>结合之前的命令，我使用以下命令来<code>build</code>: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 setup.py bdist_mac --custom-info-plist Info-highres.plist --qt-menu-nib=/usr/local/Cellar/qt5/5.4.2/plugins/platforms/</div></pre></td></tr></table></figure></p>
+<p>先上源代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line">from PyQt5.QtWidgets import QApplication, QWidget</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    </div><div class="line">    app = QApplication(sys.argv)</div><div class="line"></div><div class="line">    w = QWidget()</div><div class="line">    w.resize(250, 150)</div><div class="line">    w.move(300, 300)</div><div class="line">    w.setWindowTitle(&apos;Simple&apos;)</div><div class="line">    w.show()</div><div class="line">    </div><div class="line">    sys.exit(app.exec_())</div></pre></td></tr></table></figure>
+<p><strong>代码解析：</strong> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line">from PyQt5.QtWidgets import QApplication, QWidget</div></pre></td></tr></table></figure></p>
+<p>先导入所需要的模块，包括<code>sys</code>,<code>PyQt5.QtWidgets</code>的<code>QApplication</code>和<code>QWidget</code>模块。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app = QApplication(sys.argv)</div></pre></td></tr></table></figure>
+<p>每一个PyQt5项目都需要创建一个<code>QApplication</code>对象。<code>sys.argv</code>则提供了命令行的一些参数，这样<code>Python</code>脚本就能从<code>Shell</code>运行，这是我们控制脚本开始运行的方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">w = QWidget()</div></pre></td></tr></table></figure>
+<p><code>QWidget</code>是所有界面的基类，这里采用默认的构造函数（无父对象，没有父对象的<code>widget</code>也就是<code>window</code>）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">w.resize(250, 150)</div></pre></td></tr></table></figure>
+<p>用<code>resize</code>函数重设了窗口的大小为250px宽，150px高。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">w.move(300, 300)</div></pre></td></tr></table></figure>
+<p><code>move</code>函数把窗口移动到了x=300,y=300d的坐标位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">w.setWindowTitle(&apos;Simple&apos;)</div></pre></td></tr></table></figure>
+<p>设置了窗口的标题，会在窗口的标题栏中央显示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">w.show()</div></pre></td></tr></table></figure>
+<p><code>show</code>函数让Simple这个窗口在屏幕中显示出来，这个窗口是先在内存中产生，然后再显示在屏幕中的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sys.exit(app.exec_())</div></pre></td></tr></table></figure>
+<p>在开头我们设置了这个应用的主函数，事件由此开始产生，主函数从窗口系统接受事件并传递给widget应用，而当我们使用<code>exit()</code>或者关闭了widget时，主函数就终止。<code>sys.exit()</code>确保干净利落不留痕迹地退出。 注意到这里的代码<code>exec_()</code>,exec后面还有个’_’，这是因为<code>exec</code>是<code>Python</code>的关键字，为了避免冲突用了一个下短横。最后可以看到一个简单的窗口界面：</p>
+<div class="figure">
+<img src="../../../../images/pyqt/first.png">
+
+</div>
+<blockquote>
+<p>需要说明的是，Qt自带有QtDesigner设计交互界面，相比手写界面代码是一种更直观的方式，在以后的学习笔记里也会介绍界面与代码分开的方法，但是作为初学，手写一些简单的界面是有助于理解Qt的。</p>
+</blockquote>
+<p>欢迎转载，请注明出处。(๑¯∀¯๑)</p>
 
       
     </div>
@@ -405,7 +427,7 @@
           
             <a href="/tags/tec/" rel="tag"># Tec</a>
           
-            <a href="/tags/pyqt/" rel="tag"># PyQt</a>
+            <a href="/tags/pyqt/" rel="tag"># Pyqt</a>
           
         </div>
       
@@ -418,8 +440,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/python/ pythonmemo/" rel="next" title="Python常用函数备忘录">
-                <i class="fa fa-chevron-left"></i> Python常用函数备忘录
+              <a href="/post/python/matplotlib-quickstart/" rel="next" title="Matplotlib 学习笔记&简易教程(一)">
+                <i class="fa fa-chevron-left"></i> Matplotlib 学习笔记&简易教程(一)
               </a>
             
           </div>
@@ -428,8 +450,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/python/swig/" rel="prev" title="swig实现Python和C的互联">
-                swig实现Python和C的互联 <i class="fa fa-chevron-right"></i>
+              <a href="/post/python/pythonxfortran/" rel="prev" title="Python 和 Fortran的混合编程-f2py">
+                Python 和 Fortran的混合编程-f2py <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -724,9 +746,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://fangs.in/post/python/pyqt2app/';
-          this.page.identifier = 'post/python/pyqt2app/';
-          this.page.title = 'cx_Freeze打包生成独立App';
+          this.page.url = 'http://fangs.in/post/pyqt/pyqt/1/';
+          this.page.identifier = 'post/pyqt/pyqt/1/';
+          this.page.title = 'PyQt5学习笔记（一）';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://Cescfangs.disqus.com/embed.js';

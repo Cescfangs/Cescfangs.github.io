@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话： &amp;gt;The single construct is associated with">
+<meta name="description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话：  The single construct is associated with th">
 <meta name="keywords" content="Fortran,OpenMP,HPC">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenMP: single construct">
 <meta property="og:url" content="http://fangs.in/post/technology/single/index.html">
 <meta property="og:site_name" content="Cesco: a minimal blog">
-<meta property="og:description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话： &amp;gt;The single construct is associated with">
+<meta property="og:description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话：  The single construct is associated with th">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-08-30T05:31:21.000Z">
+<meta property="og:updated_time" content="2017-08-30T05:32:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OpenMP: single construct">
-<meta name="twitter:description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话： &amp;gt;The single construct is associated with">
+<meta name="twitter:description" content="关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话：  The single construct is associated with th">
 
 
 
@@ -373,7 +373,10 @@
       
 
       
-        <p>关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话： &gt;The single construct is associated with the structured block of code immediately following it and specifies that this block should be executed <strong>by one thread only</strong>.</p>
+        <p>关于 OpenMP 的 single construct，一开始理解存在偏差，相信也是不少新手刚接触OpenMP 时容易犯的一个错误，就是 single construct 能确保每一个区块只由一个thread 完成，但不能保证所有的区块都由不同的 thread 完成，贴上「Using OpenMP」的一段话：</p>
+<blockquote>
+<p>The single construct is associated with the structured block of code immediately following it and specifies that this block should be executed <strong>by one thread only</strong>.</p>
+</blockquote>
 <a id="more"></a>
 <p>我是在测试下面的<code>Fortran</code>代码的时候才意识到一开始没仔细看书，理解有所偏差：</p>
 <figure class="highlight fortran"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">program</span></span> main</div><div class="line">	<span class="keyword">use</span> omp_lib</div><div class="line"></div><div class="line">	<span class="keyword">implicit</span> <span class="keyword">none</span></div><div class="line">	<span class="comment">!$omp parallel</span></div><div class="line">	<span class="comment">!$omp sections</span></div><div class="line">	</div><div class="line">	<span class="comment">!$omp section</span></div><div class="line">		<span class="comment">! call fun_1()</span></div><div class="line">		<span class="built_in">print</span>*,<span class="string">"1st section Executed by thread"</span>, omp_get_thread_num()</div><div class="line">	<span class="comment">!$omp section</span></div><div class="line">		<span class="comment">! call fun_2()</span></div><div class="line">		<span class="built_in">print</span>*,<span class="string">"2nd section Executed by thread"</span>, omp_get_thread_num()</div><div class="line">	<span class="comment">!$omp end sections</span></div><div class="line">	<span class="comment">!$omp end parallel</span></div><div class="line"></div><div class="line">	<span class="keyword">end</span> <span class="function"><span class="keyword">program</span></span> main</div></pre></td></tr></table></figure>
@@ -500,7 +503,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -522,7 +525,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -599,7 +602,7 @@
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

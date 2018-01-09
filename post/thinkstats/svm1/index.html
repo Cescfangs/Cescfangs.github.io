@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="MachineLearning,Stats,SVM," />
+  <meta name="keywords" content="Stats,MachineLearning,SVM," />
 
 
 
@@ -95,7 +95,7 @@
 
 
 <meta name="description" content="这是 SVM 系列的第二篇，上一篇文章介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。">
-<meta name="keywords" content="MachineLearning,Stats,SVM">
+<meta name="keywords" content="Stats,MachineLearning,SVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我所理解的SVM(支持向量机)2——核函数的应用">
 <meta property="og:url" content="http://fangs.in/post/thinkstats/svm1/index.html">
@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://fangs.in/images/SVM/linearNotdevisible.png">
 <meta property="og:image" content="http://fangs.in/images/SVM/mapPhi.png">
 <meta property="og:image" content="http://fangs.in/images/SVM/RBFSVM.png">
-<meta property="og:updated_time" content="2017-08-28T03:11:43.000Z">
+<meta property="og:updated_time" content="2017-09-01T06:17:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我所理解的SVM(支持向量机)2——核函数的应用">
 <meta name="twitter:description" content="这是 SVM 系列的第二篇，上一篇文章介绍了 SVM 的主要思想以及推导过程，这一篇将会在此基础上介绍核函数(kernel)，这也是 SVM 最为重要的部分之一。">
@@ -390,7 +390,7 @@
 </div>
 <p>上面这幅图是不是很眼熟，在 SVM-1 中我几乎靠着这一张图说完了支持向量机的主要思想，不知道你们注意到没有，在推导 SVM 之前，我的措辞是很严谨的——「图中的两组数据，显然它们是<strong>线性可分（linear separable）</strong>的」，一切的推导都建立在线性可区分的基础上，然而实际的很多问题都并非如此，如果我在上面的图上再加一个点： <img src="../../../images/SVM/linearNotdevisible.png"></p>
 <p>无论是 <span class="math inline">\(a,b,c\)</span> 都无法完美地把两种数据区分出来，实际上也不存在一条直线能完全区分出两种数据，这种情况就是不可线性区分的，核函数或许可以帮我们解决这个问题。</p>
-<h4 id="kernel-trick">4. Kernel Trick</h4>
+<h4 id="kernel-trick">Kernel Trick</h4>
 <p>上一篇文章的最后我们通过乘数法得到了 <span class="math inline">\(\sum_{k=1}^m\alpha_iy^{(i)}=0, w =\sum_{k=1}^m\alpha_iy^{(i)}x^{(i)}\)</span> ，现在我们把它们回带到 分界线 <span class="math inline">\(y=w^Tx+b\)</span> :</p>
 <p><span class="math display">\[
 \begin{split}
@@ -443,7 +443,7 @@ K(x,y)=K((1,2,3),(4,5,6))=(1\times 4 + 2\times 5 + 3\times 6)^2=(32)^2=1024
 \end{split}
 \]</span></p>
 <p>相比于从低维映射到高维空间再进行矢量积运算，核函数大大简化了计算的过程，使得向更高维转化变为了可能，我们不需要知道低维空间的数据是怎样映射到高维空间的，我们只需要知道结果是怎么计算出来的。</p>
-<h4 id="介绍两种核函数">5. 介绍两种核函数</h4>
+<h4 id="介绍两种核函数">介绍两种核函数</h4>
 <p>在支持向量机中常用的几种核函数是多项式型核（Polynomial Kernel）、<a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel" target="_blank" rel="external">径向基函数核</a>（ Radial Basis Function Kernel，又叫高斯核，简称 RBF）以及逻辑核（ Sigmoid Kernel）。</p>
 <ul>
 <li>多项式型</li>
@@ -479,10 +479,10 @@ K(\mathbf {x} ,\mathbf {y} )&amp;=e^ {-{\frac {||\mathbf {x} -\mathbf {y} ||^{2}
 <img src="../../../images/SVM/RBFSVM.png">
 
 </div>
-<h4 id="相似度核函数的另一种理解">6. 相似度：核函数的另一种理解</h4>
+<h4 id="相似度核函数的另一种理解">相似度：核函数的另一种理解</h4>
 <p>核函数还可以理解为两个数据点的相似程度，两个向量的点乘其实就是将其中一个向量投影到另一个向量上，重叠的长度越大，相似度越大，向量点乘的结果也越大。以高斯核为例，<span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=e^{-{\frac {||\mathbf {x} -\mathbf {y} ||^{2}}{2\sigma^2}}}\)</span> 衡量的是向量 <span class="math inline">\(\mathbf{x}\)</span> 和 <span class="math inline">\(\mathbf{y}\)</span> 在无限空间的相似度，当 <span class="math inline">\(\mathbf{x} =\mathbf{y}\)</span> 时，<span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=1\)</span>，表示两个向量完全重合，当<span class="math inline">\(||\mathbf{x} -\mathbf{y}||\to\infty\)</span> 时， <span class="math inline">\(K(\mathbf {x} ,\mathbf {y} )=0\)</span> ，两个向量之间的相似度很小；另一方面，当 <span class="math inline">\(\sigma^2\)</span> 的值很小时，核函数的值越有可能趋向于0，向量 <span class="math inline">\(\mathbf{x}\)</span> 和 <span class="math inline">\(\mathbf{y}\)</span> 只有在相当接近的情况下才会被判别为相似，也就是说只有在 <span class="math inline">\(\mathbf{y}\)</span> 邻域相当小的范围内才会被认为是相似于它的向量，这样严苛的条件确保了高精度（低偏差）但是却很容易过拟合（高方差）。</p>
 <p>选择合适的核函数并不是一件容易的事情，因为评估数据点之间的相似度往往需要专业领域的知识，幸运的是大多数情况下高斯核都能取得不错的结果。核函数并不是支持向量机专用的技巧，任何算法只要能写成向量相乘的形式就可以运用核函数进行优化。</p>
-<h4 id="怎么构造核函数">7. 怎么构造核函数</h4>
+<h4 id="怎么构造核函数">怎么构造核函数</h4>
 <p>一个正确的核函数对于数据相似度有着正确的描述，两个矢量越接近重合，相似度越大，越接近正交相似度越小，多项式型核和高斯核都是正确的核函数，那么对于核函数正确与否的一般标准是什么呢？让我们引入核矩阵。</p>
 <p>定义一个<span class="math inline">\(m\times m\)</span> 的矩阵 <span class="math inline">\(K\)</span>：</p>
 <p><span class="math display">\[
@@ -503,7 +503,7 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
 <p>一个核函数 <span class="math inline">\(K: \mathbb{R}^n\times \mathbb{R}^n\to\mathbb{R}\)</span> 成立的充要条件为，对于任意的 <span class="math inline">\([x^{(1)},x^{(2)},x^{(3)}\cdots x^{(m)}]\)</span>，其对应的核矩阵为半正定对称矩阵。</p>
 </blockquote>
 <p>关于 <a href="https://en.wikipedia.org/wiki/Mercer&#39;s_theorem" target="_blank" rel="external">Mercer’s theorem</a> 的证明超出了这篇文章的范畴，有兴趣的同学可以自己查找相关资料或者戳<a href="http://web.iitd.ac.in/~sumeet/CLT2008S-lecture18.pdf" target="_blank" rel="external">这里</a>了解如何证明其充分性。</p>
-<h4 id="再说一点">8. 再说一点</h4>
+<h4 id="再说一点">再说一点</h4>
 <p>原本想在这篇文章里写完 SVM 的核函数和正则化的，但是第一篇和第二篇之间间隔太长，很多东西都得重新看一遍，导致写核函数部分花了太长时间，暂时先搁置正则化留到第三篇再写？ 欢迎转载，注明出处就好~~</p>
 
       
@@ -522,9 +522,9 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
       
         <div class="post-tags">
           
-            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
-          
             <a href="/tags/stats/" rel="tag"># Stats</a>
+          
+            <a href="/tags/machinelearning/" rel="tag"># MachineLearning</a>
           
             <a href="/tags/svm/" rel="tag"># SVM</a>
           
@@ -635,7 +635,7 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -657,7 +657,7 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -727,7 +727,7 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#接着上一篇文章"><span class="nav-number">1.</span> <span class="nav-text">接着上一篇文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kernel-trick"><span class="nav-number">2.</span> <span class="nav-text">4. Kernel Trick</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍两种核函数"><span class="nav-number">3.</span> <span class="nav-text">5. 介绍两种核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相似度核函数的另一种理解"><span class="nav-number">4.</span> <span class="nav-text">6. 相似度：核函数的另一种理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#怎么构造核函数"><span class="nav-number">5.</span> <span class="nav-text">7. 怎么构造核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再说一点"><span class="nav-number">6.</span> <span class="nav-text">8. 再说一点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#接着上一篇文章"><span class="nav-number">1.</span> <span class="nav-text">接着上一篇文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kernel-trick"><span class="nav-number">2.</span> <span class="nav-text">Kernel Trick</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍两种核函数"><span class="nav-number">3.</span> <span class="nav-text">介绍两种核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相似度核函数的另一种理解"><span class="nav-number">4.</span> <span class="nav-text">相似度：核函数的另一种理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#怎么构造核函数"><span class="nav-number">5.</span> <span class="nav-text">怎么构造核函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再说一点"><span class="nav-number">6.</span> <span class="nav-text">再说一点</span></a></li></ol></div>
             
 
           </div>
@@ -750,7 +750,7 @@ z^TKz&amp;=\sum_{i=1}^m\sum_{j=1}^mz_iK_{ij}z_j\\
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
