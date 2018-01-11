@@ -432,6 +432,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fangs.in/post/pyqt/pyqt/2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cesc Fangs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cesco: a minimal blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/post/pyqt/pyqt/2/" itemprop="url">PyQt5学习笔记（二）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-03-17T18:23:00+08:00">
+                2015-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pyqt/" itemprop="url" rel="index">
+                    <span itemprop="name">PyQt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/pyqt/pyqt/2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="post/pyqt/pyqt/2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>给你的应用设置一个个性化图标吧 本文由<a href="http://fangs.in">Cescfangs</a>译自<a href="http://zetcode.com/gui/pyqt5/firstprograms/" target="_blank" rel="external">ZetCode pyqt5系列教程</a>并作适当修改。</p>
+</blockquote>
+<p>之前学习了如何创建一个最简单的Pyqt应用，这一次将学习设置Pyqt的图标。先上源代码： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line">from PyQt5.QtWidgets import QWidget, QApplication</div><div class="line">from PyQt5.QtGui import QIcon</div><div class="line"></div><div class="line"></div><div class="line">class Exp(QWidget):</div><div class="line"></div><div class="line">    def __init__(self):</div><div class="line">        super().__init__()</div><div class="line"></div><div class="line">        self.initUI()</div><div class="line"></div><div class="line">    def initUI(self):</div><div class="line">        self.setGeometry(300, 200, 300, 200)</div><div class="line">        self.setWindowTitle(&apos;Icon&apos;)</div><div class="line">        self.setWindowIcon(QIcon(&apos;heart256.ico&apos;))</div><div class="line"></div><div class="line">        self.show()</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app = QApplication(sys.argv)</div><div class="line">    ex = Exp()</div><div class="line">    sys.exit(app.exec_())</div></pre></td></tr></table></figure></p>
+<p>如果你观察仔细的话，会发现第一个Pyqt代码的风格偏向于过程，而这个应用的代码就明显是面向对象的风格，<code>Python</code>支持面向过程和面向对象的代码风格。现在我们是开发Pyqt应用，这意味着我们将使用面向对象的代码风格。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class Exp(QWidget):</div><div class="line">    </div><div class="line">    def __init__(self):</div><div class="line">        super().__init__()</div><div class="line">        ...</div></pre></td></tr></table></figure>
+<p>面向对象的语言有三个非常重要的东西：类、属性和方法。上面这段代码创建了一个新的类<code>Exp</code>。<code>Exp</code>继承了<code>QWidget</code>，这也意味着我们同时使用了<code>Exp</code>和<code>QWidget</code>两个类的构造函数。<code>super()</code>（构造函数）将返回<code>Exp</code>的基类，同时我们也调用了他的构造函数。<code>__init__()</code>是<code>Python</code>语言的一个构造函数。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.initUI()</div></pre></td></tr></table></figure></p>
+<p>通过自定义的<code>initUI()</code>方法来完成界面的初始化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">self.setGeometry(300, 200, 300, 200)</div><div class="line">self.setWindowTitle(&apos;Icon&apos;)</div><div class="line">self.setWindowIcon(QIcon(&apos;heart256.ico&apos;))</div></pre></td></tr></table></figure>
+<p>上面的三个方法都继承自<code>QWidget</code>基类。<code>setGeometry()</code>同时完成了窗口大小和位置的设定，它兼具<code>resize()</code>和<code>move()</code>的作用。最后一个方法设置了这个应用的图标，为此我们创建了<code>Qicon</code>对象，它通过我们赋予的路径将heart256.ico显示出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app = QApplication(sys.argv)</div><div class="line">    ex = Exp()</div><div class="line">    sys.exit(app.exec_())</div></pre></td></tr></table></figure>
+<p>由此我们创建了新的应用和<code>Exp</code>类，主程序开始执行。</p>
+<div class="figure">
+<img src="../../../../images/pyqt/icon.jpg">
+
+</div>
+<p>欢迎转载，请注明出处。(๑¯∀¯๑)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://fangs.in/post/pyqt/pyqt/1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -487,7 +656,7 @@
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/pyqt/" itemprop="url" rel="index">
-                    <span itemprop="name">pyqt</span>
+                    <span itemprop="name">PyQt</span>
                   </a>
                 </span>
 
@@ -789,7 +958,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -811,7 +980,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
