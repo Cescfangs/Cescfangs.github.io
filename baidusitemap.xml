@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/tec/firstPullRequest/</loc>
+    <lastmod>2018-02-07T06:16:31.196Z</lastmod>
+    <data>
+        <display>
+        <title>在 TensorFlow 打卡人生第一次 PR</title>
+        <pubTime>2018-01-26T07:11:00.000Z</pubTime>
+        
+        <tag>Tec</tag>
+         
+        <tag>TensorFlow</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/tec/utils/vim/</loc>
+    <lastmod>2018-02-01T04:53:26.607Z</lastmod>
+    <data>
+        <display>
+        <title>Vim 奇淫巧技</title>
+        <pubTime>2018-01-31T14:51:00.000Z</pubTime>
+        
+        <tag>Tec</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tec" url="http://fangs.in/categories/tec/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/tec/utils/vscode/</loc>
+    <lastmod>2018-01-31T14:47:03.000Z</lastmod>
+    <data>
+        <display>
+        <title>vscode 奇淫巧技</title>
+        <pubTime>2018-01-31T14:51:00.000Z</pubTime>
+        
+        <tag>Tec</tag>
+         
+         
+           
+             
+              <breadCrumb title="Tec" url="http://fangs.in/categories/tec/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/%20pythonmemo/</loc>
+    <lastmod>2018-01-31T14:40:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>Python常用函数备忘录</title>
+        <pubTime>2015-04-26T12:51:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Memo</tag>
+         
+         
+           
+             
+              <breadCrumb title="python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/pyqt/pyqt/1/</loc>
+    <lastmod>2018-01-11T03:01:44.734Z</lastmod>
+    <data>
+        <display>
+        <title>PyQt5学习笔记（一）</title>
+        <pubTime>2015-03-15T13:28:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>PyQt</tag>
+         
+         
+           
+             
+              <breadCrumb title="PyQt" url="http://fangs.in/categories/pyqt/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/pyqt/pyqt/2/</loc>
+    <lastmod>2018-01-11T03:00:54.691Z</lastmod>
+    <data>
+        <display>
+        <title>PyQt5学习笔记（二）</title>
+        <pubTime>2015-03-17T10:23:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>PyQt</tag>
+         
+         
+           
+             
+              <breadCrumb title="PyQt" url="http://fangs.in/categories/pyqt/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/svm1/</loc>
+    <lastmod>2017-09-01T06:17:20.000Z</lastmod>
+    <data>
+        <display>
+        <title>我所理解的SVM(支持向量机)2——核函数的应用</title>
+        <pubTime>2016-11-30T12:27:00.000Z</pubTime>
+        
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+        <tag>SVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/svm0/</loc>
+    <lastmod>2017-09-01T06:15:37.000Z</lastmod>
+    <data>
+        <display>
+        <title>我所理解的 SVM（支持向量机）- 1</title>
+        <pubTime>2016-09-08T12:26:00.000Z</pubTime>
+        
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+        <tag>SVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/technology/schedule/</loc>
+    <lastmod>2017-08-30T05:32:51.000Z</lastmod>
+    <data>
+        <display>
+        <title>OpenMP: schedule</title>
+        <pubTime>2015-12-02T07:32:00.000Z</pubTime>
+        
+        <tag>Fortran</tag>
+         
+        <tag>OpenMP</tag>
+         
+        <tag>HPC</tag>
+         
+         
+           
+             
+              <breadCrumb title="Technology" url="http://fangs.in/categories/technology/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/technology/single/</loc>
+    <lastmod>2017-08-30T05:32:47.000Z</lastmod>
+    <data>
+        <display>
+        <title>OpenMP: single construct</title>
+        <pubTime>2015-11-27T13:30:00.000Z</pubTime>
+        
+        <tag>Fortran</tag>
+         
+        <tag>OpenMP</tag>
+         
+        <tag>HPC</tag>
+         
+         
+           
+             
+              <breadCrumb title="Technology" url="http://fangs.in/categories/technology/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/decisiontree0/</loc>
+    <lastmod>2017-08-28T06:31:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>决策树系列0:你需要一棵决策树</title>
+        <pubTime>2017-02-15T14:11:00.000Z</pubTime>
+        
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+        <tag>DecisionTrees</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pythonio-1/</loc>
+    <lastmod>2017-08-28T04:37:51.000Z</lastmod>
+    <data>
+        <display>
+        <title>Python的输入输出（二）</title>
+        <pubTime>2015-04-21T08:13:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pyqt2app/</loc>
+    <lastmod>2017-08-28T04:34:56.000Z</lastmod>
+    <data>
+        <display>
+        <title>cx_Freeze打包生成独立App</title>
+        <pubTime>2015-07-20T07:18:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>PyQt</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pythonio-0/</loc>
+    <lastmod>2017-08-28T04:34:23.000Z</lastmod>
+    <data>
+        <display>
+        <title>Python的输入输出（一）</title>
+        <pubTime>2015-04-18T07:44:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/swig/</loc>
+    <lastmod>2017-08-28T04:33:55.000Z</lastmod>
+    <data>
+        <display>
+        <title>swig实现Python和C的互联</title>
+        <pubTime>2015-07-27T09:22:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>Hybrid</tag>
+         
+        <tag>C</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pythondelaunay/</loc>
+    <lastmod>2017-08-28T04:31:24.000Z</lastmod>
+    <data>
+        <display>
+        <title>用 Python 实现 Delaunay Triangulation</title>
+        <pubTime>2016-01-30T14:07:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>Delaunay Triangulation</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pythonic/</loc>
+    <lastmod>2017-08-28T04:31:07.000Z</lastmod>
+    <data>
+        <display>
+        <title>用好这几招，让你的代码洋溢着 Pythonic 的味道</title>
+        <pubTime>2016-04-26T02:56:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/pythonxfortran/</loc>
+    <lastmod>2017-08-28T04:30:43.000Z</lastmod>
+    <data>
+        <display>
+        <title>Python 和 Fortran的混合编程-f2py</title>
+        <pubTime>2015-04-08T06:21:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Fortran</tag>
+         
+        <tag>Hybrid</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/timespent/</loc>
+    <lastmod>2017-08-28T04:30:36.000Z</lastmod>
+    <data>
+        <display>
+        <title>效率对比：Numpy, C扩展、纯Python和C</title>
+        <pubTime>2015-08-22T15:21:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>numpy</tag>
+         
+        <tag>C</tag>
+         
+        <tag>CFD</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/numpy-advancement-sum/</loc>
+    <lastmod>2017-08-28T04:21:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>numpy进阶应用--求和</title>
+        <pubTime>2016-01-30T13:30:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>numpy</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/numpy-advancement-max/</loc>
+    <lastmod>2017-08-28T04:21:04.000Z</lastmod>
+    <data>
+        <display>
+        <title>Numpy 进阶应用———最大最小值</title>
+        <pubTime>2015-08-23T07:00:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>numpy</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/bsforjianshu/</loc>
+    <lastmod>2017-08-28T04:20:11.000Z</lastmod>
+    <data>
+        <display>
+        <title>BeautifulSoup 实战（一）：获取简书作者信息</title>
+        <pubTime>2016-05-06T07:31:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>Stats</tag>
+         
+        <tag>BeautifulSoup</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/bsforjianhu2/</loc>
+    <lastmod>2017-08-28T04:20:02.000Z</lastmod>
+    <data>
+        <display>
+        <title>BeautifulSoup 实战（二）:获取文章详细信息</title>
+        <pubTime>2016-05-07T15:20:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>Stats</tag>
+         
+        <tag>BeautifulSoup</tag>
+         
+         
+           
+             
+              <breadCrumb title="python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/python/matplotlib-quickstart/</loc>
+    <lastmod>2017-08-28T04:19:53.000Z</lastmod>
+    <data>
+        <display>
+        <title>Matplotlib 学习笔记&简易教程(一)</title>
+        <pubTime>2015-03-14T08:27:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Tec</tag>
+         
+        <tag>Matplotlib</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="http://fangs.in/categories/python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/thinkbayes/</loc>
+    <lastmod>2017-08-28T03:20:35.000Z</lastmod>
+    <data>
+        <display>
+        <title>Think Bayes</title>
+        <pubTime>2016-08-20T08:10:00.000Z</pubTime>
+        
+        <tag>Tec</tag>
+         
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+        <tag>Bayes</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/likelihood/</loc>
+    <lastmod>2017-08-28T03:11:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>似然与极大似然估计</title>
+        <pubTime>2016-08-18T13:57:00.000Z</pubTime>
+        
+        <tag>Tec</tag>
+         
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://fangs.in/post/thinkstats/ml_0_linearregression/</loc>
+    <lastmod>2017-08-28T03:08:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>从线性回归说起</title>
+        <pubTime>2016-10-02T07:31:00.000Z</pubTime>
+        
+        <tag>Stats</tag>
+         
+        <tag>MachineLearning</tag>
+         
+        <tag>LinearRegression</tag>
+         
+         
+           
+             
+              <breadCrumb title="thinkstats" url="http://fangs.in/categories/thinkstats/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+</urlset>
