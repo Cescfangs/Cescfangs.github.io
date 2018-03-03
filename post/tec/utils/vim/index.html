@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="记录下 Vim 的各种奇淫巧技，备查。  重映射 Vim 有两种常用的模式，insert 和 normal，在 normal 模式下按 i 可以进入 insert 模式，按 ESC 键可以退出 insert 模式进入 normal 模式，问题在于 ESC 键距离太远，频繁使用效率不高，因此修改 ~/.vimrc 文件，添加以一行将 jk 映射为 ESC: 1inoremap jk &amp;lt;E">
+<meta name="description" content="记录下 Vim 的各种奇淫巧技，备查。">
 <meta name="keywords" content="Tec">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vim 奇淫巧技">
 <meta property="og:url" content="http://fangs.in/post/tec/utils/vim/index.html">
 <meta property="og:site_name" content="Cesco: a minimal blog">
-<meta property="og:description" content="记录下 Vim 的各种奇淫巧技，备查。  重映射 Vim 有两种常用的模式，insert 和 normal，在 normal 模式下按 i 可以进入 insert 模式，按 ESC 键可以退出 insert 模式进入 normal 模式，问题在于 ESC 键距离太远，频繁使用效率不高，因此修改 ~/.vimrc 文件，添加以一行将 jk 映射为 ESC: 1inoremap jk &amp;lt;E">
+<meta property="og:description" content="记录下 Vim 的各种奇淫巧技，备查。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-02-01T04:53:26.607Z">
+<meta property="og:updated_time" content="2018-03-03T02:15:28.889Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vim 奇淫巧技">
-<meta name="twitter:description" content="记录下 Vim 的各种奇淫巧技，备查。  重映射 Vim 有两种常用的模式，insert 和 normal，在 normal 模式下按 i 可以进入 insert 模式，按 ESC 键可以退出 insert 模式进入 normal 模式，问题在于 ESC 键距离太远，频繁使用效率不高，因此修改 ~/.vimrc 文件，添加以一行将 jk 映射为 ESC: 1inoremap jk &amp;lt;E">
+<meta name="twitter:description" content="记录下 Vim 的各种奇淫巧技，备查。">
 
 
 
@@ -376,13 +376,25 @@
         <blockquote>
 <p>记录下 Vim 的各种奇淫巧技，备查。</p>
 </blockquote>
+<a id="more"></a>
 <h2 id="重映射">重映射</h2>
 <p>Vim 有两种常用的模式，insert 和 normal，在 normal 模式下按 <code>i</code> 可以进入 insert 模式，按 ESC 键可以退出 insert 模式进入 normal 模式，问题在于 ESC 键距离太远，频繁使用效率不高，因此修改 ~/.vimrc 文件，添加以一行将 <code>jk</code> 映射为 ESC:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">inoremap jk &lt;ESC&gt;</div></pre></td></tr></table></figure>
-<h2 id="快捷键">快捷键</h2>
-<p>大多数快捷键都是可以自定义配置的，如无说明均为 vscode 默认的快捷键。</p>
-<p>在代码编辑窗口和下方 terminal 之间的切换： ⌘ + `</p>
-<a id="more"></a>
+<h2 id="查找与替换">查找与替换</h2>
+<p>这部分内容参考了 <a href="http://harttle.land/2016/08/08/vim-search-in-file.html" target="_blank" rel="external">在 Vim 中优雅地查找和替换</a>。</p>
+<p><strong>简单查找</strong></p>
+<p>在 normal 模式下输入 <code>/</code> 即可进入查找模式，输入要查找的字符串并按下回车后跳转到第一个匹配项，按 <code>n</code> 查找下一个，按 <code>N</code> 查找上一个。</p>
+<p>如果查找的是换行符应当用 <code>\n</code>，而替换为换行符则用 <code>\r</code>（相当于<code>&lt;CR&gt;</code>）。</p>
+<p>搜索后如果需要退出高亮模式 <code>:nohl</code></p>
+<p><strong>查找当前词</strong></p>
+<p>在 normal 模式下按 <code>*</code> 即可查找光标所在单词，要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配 <code>foo bar</code> 中的 <code>foo</code>，但不可匹配 <code>foobar</code> 中的 <code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
+<p>按下 <code>g*</code> 可查找光标所在单词的字符序列，每次出现前后字符无要求。 即 <code>foo bar</code> 和 <code>foobar</code> 中的 <code>foo</code> 均可被匹配到。</p>
+<p>由于 Vim 默认大小写敏感进行匹配，在很多时候并不方便，可以在 <code>~/.vimrc</code> 里进行配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 设置默认进行大小写不敏感查找</div><div class="line">set ignorecase</div><div class="line"><span class="meta">#</span> 如果有一个大写字母，则切换到大小写敏感查找</div><div class="line">set smartcase</div></pre></td></tr></table></figure>
+<p><strong>替换</strong></p>
+<p>在 normal 模式下输入<code>:s</code>（substitute）命令查找和替换字符串。语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</div></pre></td></tr></table></figure>
+<p>比如 <code>:%s/foo/bar/g</code> 会在全局范围(<code>%</code>)查找 <code>foo</code> 并替换为 <code>bar</code>，所有出现都会被替换（<code>g</code>）。</p>
 
       
     </div>
@@ -601,7 +613,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重映射"><span class="nav-number">1.</span> <span class="nav-text">重映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快捷键"><span class="nav-number">2.</span> <span class="nav-text">快捷键</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重映射"><span class="nav-number">1.</span> <span class="nav-text">重映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找与替换"><span class="nav-number">2.</span> <span class="nav-text">查找与替换</span></a></li></ol></div>
             
 
           </div>
