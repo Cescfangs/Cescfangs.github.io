@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fangs.in/post/thinkstats/svm1/</loc>
+    
+    <lastmod>2018-04-09T03:34:38.409Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://fangs.in/post/tec/utils/vim/</loc>
     
-    <lastmod>2018-03-03T02:15:28.889Z</lastmod>
+    <lastmod>2018-03-03T14:04:30.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://fangs.in/post/thinkstats/tec/firstPullRequest/</loc>
     
-    <lastmod>2018-02-07T06:16:31.196Z</lastmod>
+    <lastmod>2018-02-07T07:42:29.000Z</lastmod>
     
   </url>
   
@@ -40,13 +47,6 @@
     <loc>http://fangs.in/post/pyqt/pyqt/2/</loc>
     
     <lastmod>2018-01-11T03:00:54.691Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://fangs.in/post/thinkstats/svm1/</loc>
-    
-    <lastmod>2017-09-01T06:17:20.000Z</lastmod>
     
   </url>
   
