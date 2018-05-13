@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://fangs.in/post/thinkstats/decisiontree0/</loc>
+    
+    <lastmod>2018-05-13T08:38:05.033Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://fangs.in/post/thinkstats/svm1/</loc>
     
     <lastmod>2018-04-09T03:34:38.409Z</lastmod>
@@ -68,13 +75,6 @@
     <loc>http://fangs.in/post/technology/single/</loc>
     
     <lastmod>2017-08-30T05:32:47.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://fangs.in/post/thinkstats/decisiontree0/</loc>
-    
-    <lastmod>2017-08-28T06:31:31.000Z</lastmod>
     
   </url>
   

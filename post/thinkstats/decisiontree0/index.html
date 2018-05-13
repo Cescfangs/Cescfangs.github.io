@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/决策树结构图.png">
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/tree-space.png">
 <meta property="og:image" content="http://fangs.in/images/decisiontree0/prune.png">
-<meta property="og:updated_time" content="2017-08-28T06:31:31.000Z">
+<meta property="og:updated_time" content="2018-05-13T08:38:05.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="决策树系列0:你需要一棵决策树">
 <meta name="twitter:description" content="关于决策树 决策树是非常流行的一种机器学习算法，基于决策树的集成算法随机森林更是位于机器学习 Top10 的算法之一。决策树之所以备受推崇，很大一个原因是其实现的过程与人类思考问题的方式非常接近，即使没有任何机器学习基础的人也可以看懂决策树做出判断的过程：">
@@ -390,14 +390,14 @@
 <img src="../../../images/decisiontree0/决策树结构图.png">
 
 </div>
-<p>决策树的概念来自自然界中的树，树有分支、叶子、根和树干；决策树的节点根据选定的属性进行分裂，形成分支，这些分支上的节点是上一层节点的子节点，如果某节点不存在子节点（即不再向下延伸），那么这个节点就是叶子节点。每个决策树都有一个根节点（root），和树的跟一样，这是一棵决策树开始生长的起点。</p>
+<p>决策树的概念来自自然界中的树，树有分支、叶子、根和树干；决策树的节点根据选定的特征进行切分，形成分支，这些分支上的节点是上一层节点的子节点，如果某节点不存在子节点（即不再向下延伸），那么这个节点就是叶子节点。每个决策树都有一个根节点（root），和树的跟一样，这是一棵决策树开始生长的起点。</p>
 <h4 id="种一棵决策树">种一棵决策树</h4>
 <p>决策树的生长意味着对数据空间的不断分割，每个叶子节点都对应于空间中的某一部分，将所有叶子节点对应的空间相加就是原来的数据空间，以二维数据空间为例，<span class="math inline">\(X\in \mathbf{X}\)</span>，有两个维度的特征，每一次我们都选择其中一个特征进行分割，这个过程我们可以用下图形象地表示出来：</p>
 <div class="figure">
 <img src="../../../images/decisiontree0/tree-space.png">
 
 </div>
-<p>上图中叶子节点是 <span class="math inline">\(X_3,X_5,X_6,X_7,X_8\)</span> ，这些叶子节点对应的子空间之和即为原始数据空间。在二维空间里似乎几何分割更加直观，但是我们几乎不可能画出更高维空间的分割方法，对于决策树来说，高维空间和低维空间的分割的过程大同小异，无非是再增添一些节点，让树生长的更为茂盛罢了。</p>
+<p>上图中叶子节点是 <span class="math inline">\(X_3,X_5,X_6,X_7,X_8\)</span> ，这些叶子节点对应的子空间之和即为原始数据空间。在二维空间里似乎几何分割更加直观，但是我们很难画出更高维空间的几何分割，对于决策树来说，高维空间和低维空间的分割过程大同小异，无非是再增添一些节点，让树生长的更为茂盛罢了。</p>
 <p>构造一颗决策树需要解决四个问题：</p>
 <ol style="list-style-type: decimal">
 <li>选择什么特征进行分裂？如何给定分裂的临界值？</li>
@@ -405,19 +405,19 @@
 <li>分裂到什么时候停止？</li>
 <li>每个叶子节点都有一个对应的分类结果，怎么给？</li>
 </ol>
-<p>我们来看看这些问题该如何解决：</p>
+<p>以 CART 树的分类问题为例，看看这些问题该如何解决：</p>
 <ul>
 <li>选择分裂特征和分裂值</li>
 </ul>
-<p>假设我们输入的的数据 <span class="math inline">\(\mathbf{x}=[x_1,x_2…x_n]^T\)</span> ，其中既有连续变量又有离散变量，以 CART 树为例，对于连续变量 <span class="math inline">\(x_i\)</span>，我们会选定一个判定值 <span class="math inline">\(c\)</span>，当 <span class="math inline">\(x_i^{(j)}\leqslant c\)</span> 时，该样本进入左边的子节点，否则进入右边的子节点（CART 树做二元分类），连续变量的取值虽然是无穷的，但是训练的数据是有限的，如果训练集的数量是 <span class="math inline">\(m\)</span>，那么临界值 <span class="math inline">\(c\)</span> 最多只有 <span class="math inline">\(m\)</span> 种选择（考虑所有样本不能落入同一个子节点的话就是 <span class="math inline">\(m-1\)</span> 种），其中一种处理思路是，依次取 <span class="math inline">\(c\in \{x_i^{(1)}, x_i^{(2)}, x_i^{(3)}...x_i^{(m)}\}\)</span> ，选择分类效果最好的一种作为当前节点的分裂值。</p>
-<p>对于离散变量 <span class="math inline">\(x_j\)</span>，它的取值范围必然是有限的，假设共有 M 个不同的类别，进行分裂时，我们会给定一个 子集<span class="math inline">\(A\subset \{1,2,3…M\}\)</span> ，如果 <span class="math inline">\(x_j^{(i)}\in c\)</span> 进入左边的子节点，反之进入右边的子节点，同样我们会遍历所有子集 <span class="math inline">\(A\)</span>，并从中选择效果最好的一个作为分裂值 。</p>
-<p>通过上面的过程，我们完成了当前节点其中一个特征作为分裂变量的评估，并确定了该特征对应的最佳分裂点，最终我们还需要对所有属性的最佳分裂点进行评估，从中选出其中效果最好的属性作为分裂变量，该属性的分裂值即为当前节点的最佳分裂值。用伪代码的形式表达这个流程：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">初始化 当前最佳分类效果，当前最佳分裂特征和当前最佳分裂值;</div><div class="line"></div><div class="line"><span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; 特征数量; ++i)&#123;</div><div class="line">  选择待评估的特征 x_i;</div><div class="line">  <span class="keyword">if</span> (x_i 是连续变量)&#123;</div><div class="line">    找出最佳分裂值 c;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span>&#123;</div><div class="line">    找出最佳分裂集合 A;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (E_i &gt; 当前最佳分类效果)&#123;</div><div class="line">    当前最佳分类效果 = E_i;</div><div class="line">    当前最佳分裂特征 = x_i;</div><div class="line">    当前最佳分裂值 = c 或 A；</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>假设我们输入的的数据 <span class="math inline">\(\mathbf{x^{(i)}}=[x_1^{(i)},x_2^{(i)}…x_n^{(i)}]^T\)</span> ，其中既有连续变量又有离散变量，对于连续变量 <span class="math inline">\(x_i\)</span>，我们会选定一个值 <span class="math inline">\(c\)</span>，当 <span class="math inline">\(x_i^{(j)}\leqslant c\)</span> 时，该样本进入左边的子节点，否则进入右边的子节点（CART 树做二分类），连续变量的取值虽然是无穷的，但训练数据是有限的，如果训练集的数量是 <span class="math inline">\(m\)</span>，那么临界值 <span class="math inline">\(c\)</span> 最多只有 <span class="math inline">\(m\)</span> 种选择（考虑所有样本不能落入同一个子节点则是 <span class="math inline">\(m-1\)</span> 种），其中一种处理思路是，取 <span class="math inline">\(c\in \{x_i^{(1)}, x_i^{(2)}, x_i^{(3)}...x_i^{(m)}\}\)</span> ，选择<strong>分类效果最好</strong>的一种作为当前节点的切分值。</p>
+<p>对于离散变量 <span class="math inline">\(x_j\)</span>，它的取值范围必然是有限的，假设共有 M 个不同的类别，进行分裂时，我们给定一个子集<span class="math inline">\(A\subset \{1,2,3…M\}\)</span> ，如果 <span class="math inline">\(x_j^{(i)}\in A\)</span> 进入左边的子节点，反之进入右边的子节点，遍历子集 <span class="math inline">\(A\)</span>，选择效果最好的一个作为切分点 。</p>
+<p>对所有特征的最佳切分点进行评估，从中选出其中效果最好的特征和切分点<span class="math inline">\((s,c)\)</span>，用伪代码的形式表达这个流程：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">初始化 当前最佳分类效果，当前最佳分裂特征和当前最佳分裂值;</div><div class="line"></div><div class="line"><span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; 特征数量; ++i)&#123;</div><div class="line">  选择待评估的特征 x_i;</div><div class="line">  <span class="keyword">if</span> (x_i 是连续变量)&#123;</div><div class="line">    找出最佳切分值 c;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span>&#123;</div><div class="line">    找出最佳子集 A;</div><div class="line">    计算选择 x_i 进行分裂的对应的最佳效果 E_i;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">if</span> (E_i &gt; 当前最佳分类效果)&#123;</div><div class="line">    当前最佳分类效果 = E_i;</div><div class="line">    当前最佳分裂特征 = x_i;</div><div class="line">    当前最佳分裂值 = c 或 A；</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
 <li>评估分裂效果</li>
 </ul>
-<p>我们需要一个能定量评估分类效果的函数 <span class="math inline">\(\phi\)</span> ，通常把它叫做不纯度函数(Impurity Function)，顾名思义，一个节点中样本类型越多不纯度越高。我们的目的是要获得尽可能小的不纯度，即每一次分裂都让不纯度降低。假设数据总共有 <span class="math inline">\(K\)</span> 个类型，对于当前节点 <span class="math inline">\(t\)</span> ，类型为 <span class="math inline">\(k\)</span> 的数据所占比例为 <span class="math inline">\(p(k|t)\)</span> ，容易推得 <span class="math inline">\(\sum_{k=1}^Kp(k|t)=1\)</span>。</p>
-<p>不纯度函数可以有很多选择，但都必须遵循以下原则：</p>
+<p>我们需要一个能定量评估分类效果的函数 <span class="math inline">\(\phi\)</span> ，通常把它叫做不纯度函数(Impurity Function)。可以想象一个节点中样本类型越多、分布越均匀不纯度越高，举个例子，[+++—] 要比 [+++++-] 的不纯度高，因为分布均匀，前者传递的信息是模糊的，后者则能相对明确地代表 “+” 这个状态。我们的目的是要在子节点中获得尽可能小的不纯度，即每一次切分都让不纯度降低。假设数据总共有 <span class="math inline">\(K\)</span> 个类型，对于当前节点 <span class="math inline">\(t\)</span> ，类型为 <span class="math inline">\(k\)</span> 的数据所占比例为 <span class="math inline">\(p(k|t)\)</span> ，容易推得 <span class="math inline">\(\sum_{k=1}^Kp(k|t)=1\)</span>。</p>
+<p>不纯度函数可以有很多选择，但必须遵循以下原则：</p>
 <ol style="list-style-type: decimal">
 <li>节点中各类型的数据均匀分布时，不纯度最高，即 <span class="math inline">\(p(k|t)=1/K,(k=1,2…K)\)</span> 时，<span class="math inline">\(\phi\)</span> 达到最大；</li>
 <li>节点中只有一种类型的数据时，不纯度最低，即 <span class="math inline">\(p(k|t)=1,p(i|t)=0,(i=0,1…k-1,k+1…K)\)</span> 时，<span class="math inline">\(\phi\)</span> 达到最小；</li>
@@ -425,9 +425,9 @@
 </ol>
 <p>给定不纯度函数 <span class="math inline">\(\phi\)</span> 后，我们用 <span class="math inline">\(i(t)\)</span> 来表示节点 <span class="math inline">\(t\)</span> 的不纯度： <span class="math display">\[
 i(t)=\phi(p(1|t), p(2|t)...p(K|t))
-\]</span> 有了节点的不纯度之后，我们就可以定量评估对于节点 <span class="math inline">\(t\)</span>，分裂 <span class="math inline">\(s\)</span> （表示具体的分裂属性和分裂值）的效果 <span class="math inline">\(\Phi(s,t)\)</span>： <span class="math display">\[
+\]</span> 有了节点的不纯度之后，我们就可以定量评估对于节点 <span class="math inline">\(t\)</span>，分裂 <span class="math inline">\(s\)</span> （表示具体的切分特征和切分点）的效果 <span class="math inline">\(\Phi(s,t)\)</span>： <span class="math display">\[
 \Phi(s,t)=i(t)-p_Ri(t_R)-p_Li(t_L)
-\]</span> 其中， <span class="math inline">\(p_R, p_L\)</span> 分别表示节点 <span class="math inline">\(t\)</span> 中的数据落入右边子节点和左边的子节点的概率，<span class="math inline">\(i(t_R), i(t_L)\)</span> 则为子节点的不纯度，显然 <span class="math inline">\(\Phi(s,t)\)</span> 表示的是，经过分裂之后，子节点的不纯度总和相对于父节点来说降低了多少，这个值越大表示这次分裂的效果越好。</p>
+\]</span> 其中， <span class="math inline">\(p_R, p_L\)</span> 分别表示节点 <span class="math inline">\(t\)</span> 中的数据落入右边子节点和左边子节点的概率，<span class="math inline">\(i(t_R), i(t_L)\)</span> 则为子节点的不纯度，显然 <span class="math inline">\(\Phi(s,t)\)</span> 表示的是，经过分裂之后，子节点的不纯度和相对于父节点来说降低了多少，这个值越大表示这次分裂的效果越好。</p>
 <p>最后我们再定义树的不纯度 <span class="math inline">\(I(T)\)</span>： <span class="math display">\[
 I(T)=\sum_{t\in \widetilde{T}}i(t)p(t)
 \]</span> 注意上式只对所有的叶子节点 <span class="math inline">\(\widetilde{T}\)</span> 进行求和，<span class="math inline">\(p(t)\)</span> 可以用进入叶子节点 <span class="math inline">\(t\)</span> 中的样本数量除以样本总量求得。</p>
@@ -441,16 +441,20 @@ I(T)=\sum_{t\in \widetilde{T}}i(t)p(t)
 <ul>
 <li>给叶子节点赋值</li>
 </ul>
-<p>所有的叶子节点最后都要给出一个答案，即落入这个叶子节点的数据应该属于哪一类？赋值方式是相当简单粗暴的，少数服从多数，占多数的类即为该叶子节点的分类结果。</p>
+<p>所有的叶子节点最后都要给出一个答案，即落入这个叶子节点的数据应该属于哪一类？赋值方式简单且粗暴，少数服从多数，占多数的类即为该叶子节点的分类结果。</p>
 <ul>
 <li>什么时候停止分裂</li>
 </ul>
-<p>这取决于我们的不纯度函数和种树的策略，可以证明如果以错误分类率作为不纯度函数，子节点的不纯度之和总是小于父节点（证明见最后），意味着分裂将进行到每个叶子节点只有一个样本时（分无可分），这会让我们的树变得非常庞大，引起严重的过拟合问题。一种处理方法是，设置一个不纯度降低的阈值，当某次分裂带来的不纯度减小小于这个值时，可以认为此次分裂效果并不理想，应当停止分裂，这种方法的缺点在于分裂的依据过于短视，当前效果平平的分裂很有可能对之后几步影响巨大；另一种较为常用的策略是，不限制树的生长，后期进行剪枝。</p>
+<p>这取决于我们的不纯度函数和种树的策略，可以证明如果以错误分类率作为不纯度函数，子节点的不纯度之和总是小于父节点（证明见最后），意味着分裂将持续进行直至叶子节点只有一个样本时（分无可分），这会让我们的树变得非常庞大，引起严重的过拟合问题。一种处理方法是，设置一个不纯度降低的阈值，当某次分裂带来的不纯度减小小于这个值时，可以认为此次分裂效果并不理想，应当停止分裂，这种方法的缺点在于分裂的依据过于短视，当前效果平平的分裂很有可能对之后几步影响巨大；另一种较为常用的策略是，不限制树的生长，后期进行剪枝。</p>
+<h4 id="回归任务">回归任务</h4>
+<p>决策树处理回归任务的流程与分类任务基本一样，不同之处在于切分点的评估。在分类任务中，我们使用基尼指数等作为不纯度函数，这些不适用于回归任务（没有类别），我们使用 MSE 来评估分裂的效果。选择分裂值 <span class="math inline">\(c\)</span> 将某个节点分为M（CART 树 M=2） 个子节点 <span class="math inline">\(R_1, R_2,…,R_M\)</span>，每个子节点的值应为常数 <span class="math inline">\(c_i\)</span>： <span class="math display">\[
+\min_{j,s}\left[\min_{c_i}\sum_{x^i\in R_i}(y^i-c_i)^2\right]
+\]</span> 显然对于任一特征 <span class="math inline">\(j\)</span> 的分裂点 <span class="math inline">\(s\)</span>，当 <span class="math inline">\(c_i=\mathrm{ave}(y^i| x^i\in R_i)\)</span>，上式取到极小值，扫描一遍数据即可确定 <span class="math inline">\(s\)</span>。出于计算效率的考量，回归树和分类树在分裂时的选择都是贪心的，即选择对于当前步来说效果最好的，而非完成后的整体效果。</p>
 <h4 id="处理缺失值">处理缺失值</h4>
 <p>决策树在处理缺失值时相比其他的算法有着天然的优势，一般来说有一下几种处理方法：</p>
 <ol style="list-style-type: decimal">
 <li>把「缺失」另做一类，或归到已有的一类中，即假设「缺失」也是对应特征的一个值；</li>
-<li>根据概率分布到子节点中，有全部分配到最大概率子节点的，也可以根据各子节点中的数量按比例分配</li>
+<li>根据概率分布到子节点中，可以全部分配到最大概率子节点，也可以根据各子节点中的数量按比例分配</li>
 <li>替代分割法（surrogate split），当前节点的最佳分组是对于变量 <span class="math inline">\(s\)</span> 时，如果数据中（训练或者测试数据）有个别条目缺失 <span class="math inline">\(s\)</span> ，那么将通过其他变量进行一系列的分组，这些分组的结果非常接近 <span class="math inline">\(s\)</span> 的最佳分组结果，从中选出最接近的分组方法来处理缺失 <span class="math inline">\(s\)</span> 属性的条目。</li>
 <li>计算不纯度时，基于该特征未缺失的样本进行计算，而对于有缺失的样本可以将其添加到该特征下的所有分类中</li>
 </ol>
@@ -477,8 +481,298 @@ I(T)=\sum_{t\in \widetilde{T}}i(t)p(t)
 
 </div>
 <p>一个非常残酷的现实是，即使树 <span class="math inline">\(T\)</span> 的规模并不是很大，其分支数量也是相当惊人的，穷举所有的分支进行判断并不可行，我们需要一种更为聪明的策略来进行剪枝，敬请期待决策树系列的下一篇文章：Minimal Cost-Complexity Pruning…</p>
-<h4 id="动手玩一玩">动手玩一玩</h4>
-<p>本文提供了一个决策树的代码（没有剪枝），👉<a href="https://github.com/Cescfangs/ThinkStats-JupyterNotebook/tree/master/DecisionTrees" target="_blank" rel="external">戳这里</a>，是基于 <a href="http://shop.oreilly.com/product/9780596529321.do" target="_blank" rel="external">Programming Collective Intelligence</a> 第七章的一个案例，你也可以看 <a href="http://www.patricklamle.com/Tutorials/Decision%20tree%20python/tuto_decision%20tree.html" target="_blank" rel="external"><strong>Patrick L. Lê</strong></a> 写的一个详细的教程，他也提供了代码，先看一看再自己动手写一个完整的决策树代码，把代码和上面讲的对应起来，讲真对于加深理解很有帮助啊。</p>
+<h4 id="一个例子">一个例子</h4>
+<p>例子来源于 <a href="http://shop.oreilly.com/product/9780596529321.do" target="_blank" rel="external">Programming Collective Intelligence</a> 第七章，根据相关特征预测用户的会员类型：</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>来源</strong></th>
+<th><strong>地域</strong></th>
+<th><strong>读过FAQ</strong></th>
+<th><strong>浏览网页数量</strong></th>
+<th><strong>会员类型</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>digg</td>
+<td>USA</td>
+<td>yes</td>
+<td>24</td>
+<td>Basic</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>kiwitobes</td>
+<td>France</td>
+<td>yes</td>
+<td>23</td>
+<td>Basic</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>(direct)</td>
+<td>UK</td>
+<td>no</td>
+<td>21</td>
+<td>Basic</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>digg</td>
+<td>New Zealand</td>
+<td>yes</td>
+<td>12</td>
+<td>Basic</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>google</td>
+<td>UK</td>
+<td>yes</td>
+<td>18</td>
+<td>Basic</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>kiwitobes</td>
+<td>France</td>
+<td>yes</td>
+<td>19</td>
+<td>Basic</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>slashdot</td>
+<td>USA</td>
+<td>yes</td>
+<td>18</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>(direct)</td>
+<td>Zealand</td>
+<td>no</td>
+<td>12</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>slashdot</td>
+<td>France</td>
+<td>yes</td>
+<td>19</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>digg</td>
+<td>USA</td>
+<td>no</td>
+<td>18</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>google</td>
+<td>UK</td>
+<td>no</td>
+<td>18</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>kiwitobes</td>
+<td>UK</td>
+<td>no</td>
+<td>19</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>slashdot</td>
+<td>UK</td>
+<td>no</td>
+<td>21</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>google</td>
+<td>France</td>
+<td>yes</td>
+<td>23</td>
+<td>Premium</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>google</td>
+<td>UK</td>
+<td>no</td>
+<td>21</td>
+<td>Premium</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>google</td>
+<td>USA</td>
+<td>no</td>
+<td>24</td>
+<td>Premium</td>
+</tr>
+</tbody>
+</table>
+<p>使用基尼指数作为不纯度函数，决策树的构建过程如下：</p>
+<p>根节点基尼指数为： <span class="math display">\[
+i_{root}=\frac{6}{16}\times (1-\frac{6}{16})+\frac{7}{16}\times (1-\frac{7}{16})+\frac{3}{16}\times (1-\frac{3}{16})=0.6328
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>选择’来源‘作为切分的特征：</li>
+</ol>
+<ul>
+<li><p>切分点为 google 时： <span class="math display">\[
+ \begin{split}
+ i_{google}&amp;=p(google)\times i(t_L) + p(not\ google)\times i(t_R)\\
+ &amp;=\frac{5}{16}\times \left[\frac{3}{5}\times (1-\frac{3}{5})+\frac{1}{5}\times (1-\frac{1}{5})+\frac{1}{5}\times (1-\frac{1}{5})\right]\\
+ &amp;+\frac{11}{16}\times \left[\frac{6}{11}\times (1-\frac{6}{11})+\frac{5}{11}\times (1-\frac{5}{11})\right]\\
+ &amp;=0.5159
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 digg 时： <span class="math display">\[
+ \begin{split}
+ i_{digg}&amp;=p(digg)\times i(t_L) + p(not\ digg)\times i(t_R)\\
+ &amp;=\frac{3}{16}\times \left[\frac{2}{3}\times (1-\frac{2}{3})+\frac{1}{3}\times (1-\frac{1}{3})\right]\\
+ &amp;+\frac{13}{16}\times \left[\frac{6}{13}\times (1-\frac{6}{13})+\frac{3}{13}\times (1-\frac{3}{13})+\frac{4}{13}\times (1-\frac{4}{13})\right]\\
+ &amp;=0.6025
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 kiwitobes 时： <span class="math display">\[
+ \begin{split}
+ i_{kiwitobes}&amp;=p(kiwitobes)\times i(t_L) + p(not\ kiwitobes)\times i(t_R)\\
+ &amp;=\frac{3}{16}\times \left[\frac{2}{3}\times (1-\frac{2}{3})+\frac{1}{3}\times (1-\frac{1}{3})\right]\\
+ &amp;+\frac{13}{16}\times \left[\frac{6}{13}\times (1-\frac{6}{13})+\frac{3}{13}\times (1-\frac{3}{13})+\frac{4}{13}\times (1-\frac{4}{13})\right]\\
+ &amp;=0.6025
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 slashdot 时： <span class="math display">\[
+ \begin{split}
+ i_{slashdot}&amp;=p(slashdot)\times i(t_L) + p(not\ slashdot)\times i(t_R)\\
+ &amp;=\frac{3}{16}\times \left[0\right]\\
+ &amp;+\frac{13}{16}\times \left[\frac{6}{13}\times (1-\frac{6}{13})+\frac{3}{13}\times (1-\frac{3}{13})+\frac{4}{13}\times (1-\frac{4}{13})\right]\\
+ &amp;=0.5192
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 (direct) 时： <span class="math display">\[
+ \begin{split}
+ i_{ (direct)}&amp;=p( (direct))\times i(t_L) + p(not\  (direct))\times i(t_R)\\
+ &amp;=\frac{2}{16}\times \left[\frac{1}{2}\times (1-\frac{1}{2})+\frac{1}{2}\times (1-\frac{1}{2})\right]\\
+ &amp;+\frac{14}{16}\times \left[\frac{6}{14}\times (1-\frac{6}{14})+\frac{3}{14}\times (1-\frac{3}{14})+\frac{5}{14}\times (1-\frac{5}{14})\right]\\
+ &amp;=0.625
+ \end{split}
+ \]</span> 可见选择 “来源” 作为分裂的特征，当切分点为 google 时不纯度下降最大=0.6328-0.5159=0.1169</p></li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>选择地域作为分裂特征：</li>
+</ol>
+<ul>
+<li><p>切分点为 USA 时： <span class="math display">\[
+ \begin{split}
+ i_{USA}&amp;=p(USA)\times i(t_L) + p(not\ USA)\times i(t_R)\\
+ &amp;=\frac{4}{16}\times \left[\frac{2}{4}\times (1-\frac{2}{4})+\frac{1}{4}\times (1-\frac{1}{4})+\frac{1}{4}\times (1-\frac{1}{4})\right]\\
+ &amp;+\frac{12}{16}\times \left[\frac{2}{12}\times (1-\frac{2}{12})+\frac{5}{12}\times (1-\frac{5}{12})+\frac{5}{12}\times (1-\frac{5}{12})\right]\\
+ &amp;=0.625
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 France 时： <span class="math display">\[
+ \begin{split}
+ i_{France}&amp;=p(France)\times i(t_L) + p(not\ France)\times i(t_R)\\
+ &amp;=\frac{4}{16}\times \left[\frac{2}{4}\times (1-\frac{2}{4})+\frac{1}{4}\times (1-\frac{1}{4})+\frac{1}{4}\times (1-\frac{1}{4})\right]\\
+ &amp;+\frac{12}{16}\times \left[\frac{2}{12}\times (1-\frac{2}{12})+\frac{6}{12}\times (1-\frac{6}{12})+\frac{4}{12}\times (1-\frac{4}{12})\right]\\
+ &amp;=0.6145
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 UK 时： <span class="math display">\[
+ \begin{split}
+ i_{UK}&amp;=p(UK)\times i(t_L) + p(not\ UK)\times i(t_R)\\
+ &amp;=\frac{6}{16}\times \left[\frac{2}{6}\times (1-\frac{2}{6})+\frac{3}{6}\times (1-\frac{3}{6})+\frac{1}{6}\times (1-\frac{1}{6})\right]\\
+ &amp;+\frac{10}{16}\times \left[\frac{2}{10}\times (1-\frac{2}{10})+\frac{4}{10}\times (1-\frac{4}{10})+\frac{4}{10}\times (1-\frac{4}{10})\right]\\
+ &amp;=0.6291
+ \end{split}
+ \]</span></p></li>
+<li><p>切分点为 New Zealand 时： <span class="math display">\[
+ \begin{split}
+ i_{New Zealand}&amp;=p(New\ Zealand)\times i(t_L) + p(not\ New\ Zealand)\times i(t_R)\\
+ &amp;=\frac{2}{16}\times \left[\frac{1}{2}\times (1-\frac{1}{2})+\frac{1}{2}\times (1-\frac{1}{2})\right]\\
+ &amp;+\frac{14}{16}\times \left[\frac{6}{14}\times (1-\frac{6}{14})+\frac{3}{14}\times (1-\frac{3}{14})+\frac{5}{14}\times (1-\frac{5}{14})\right]\\
+ &amp;=0.625
+ \end{split}
+ \]</span></p></li>
+</ul>
+<p>可见选择 “地域” 作为分裂的特征，当切分点为 France 时不纯度下降最大=0.6328-0.6145=0.0183</p>
+<ol start="3" style="list-style-type: decimal">
+<li>选择“读过 FAQ” 作为特征时：</li>
+</ol>
+<ul>
+<li>切分点为 yes 时： <span class="math display">\[
+ \begin{split}
+ i_{yes}&amp;=p(yes)\times i(t_L) + p(no)\times i(t_R)\\
+ &amp;=\frac{8}{16}\times \left[\frac{1}{8}\times (1-\frac{1}{8})+\frac{2}{8}\times (1-\frac{2}{8})+\frac{5}{8}\times (1-\frac{5}{8})\right]\\
+ &amp;+\frac{8}{16}\times \left[\frac{2}{8}\times (1-\frac{2}{8})+\frac{1}{8}\times (1-\frac{1}{8})+\frac{5}{8}\times (1-\frac{5}{8})\right]\\
+ &amp;=0.5312
+ \end{split}
+ \]</span></li>
+</ul>
+<p>​ “读过 FAQ” 为二元特征，仅有一个分裂点为不纯度下降=0.6328-0.5312=0.1016</p>
+<ol start="4" style="list-style-type: decimal">
+<li>选择“浏览网页数量” 作为特征时：</li>
+</ol>
+<p>这是一个连续特征，根据样本中的数据依次选取切分点： <span class="math display">\[
+   \begin{split}
+   i_{浏览数量=12}&amp;=p(浏览数量\leqslant12)\times i(t_L) + p(浏览数量&gt;12)\times i(t_R)\\
+   &amp;=\frac{2}{16}\times \left[\frac{1}{2}\times (1-\frac{1}{2})+\frac{1}{2}\times (1-\frac{1}{2})\right]\\
+   &amp;+\frac{14}{16}\times \left[\frac{6}{14}\times (1-\frac{6}{14})+\frac{3}{14}\times (1-\frac{3}{14})+\frac{5}{14}\times (1-\frac{5}{14})\right]\\
+   &amp;=0.625
+   \end{split}
+   \]</span></p>
+<p><span class="math display">\[
+   \begin{split}
+   i_{浏览数量=18}&amp;=p(浏览数量\leqslant18)\times i(t_L) + p(浏览数量&gt;18)\times i(t_R)\\
+   &amp;=\frac{6}{16}\times \left[\frac{4}{6}\times (1-\frac{4}{6})+\frac{2}{6}\times (1-\frac{2}{6})\right]\\
+   &amp;+\frac{10}{16}\times \left[\frac{3}{10}\times (1-\frac{3}{10})+\frac{4}{10}\times (1-\frac{4}{10})+\frac{3}{10}\times (1-\frac{3}{10})\right]\\
+   &amp;=0.5791
+   \end{split}
+   \]</span></p>
+<p><span class="math display">\[
+   \begin{split}
+   i_{浏览数量=19}&amp;=p(浏览数量\leqslant19)\times i(t_L) + p(浏览数量&gt;19)\times i(t_R)\\
+   &amp;=\frac{9}{16}\times \left[\frac{6}{9}\times (1-\frac{6}{9})+\frac{3}{9}\times (1-\frac{3}{9})\right]\\
+   &amp;+\frac{7}{16}\times \left[\frac{3}{7}\times (1-\frac{3}{7})+\frac{3}{7}\times (1-\frac{3}{7})+\frac{1}{7}\times (1-\frac{1}{7})\right]\\
+   &amp;=0.5178
+   \end{split}
+   \]</span></p>
+<p><span class="math display">\[
+\begin{split}
+   i_{浏览数量=21}&amp;=p(浏览数量\leqslant21)\times i(t_L) + p(浏览数量&gt;21)\times i(t_R)\\
+   &amp;=\frac{12}{16}\times \left[\frac{7}{12}\times (1-\frac{7}{12})+\frac{1}{12}\times (1-\frac{1}{12})+\frac{4}{12}\times (1-\frac{4}{12})\right]\\
+   &amp;+\frac{4}{16}\times \left[\frac{2}{4}\times (1-\frac{2}{4})+\frac{2}{4}\times (1-\frac{2}{4})\right]\\
+   &amp;=0.5312
+   \end{split}
+\]</span></p>
+<p><span class="math display">\[
+\begin{split}
+   i_{浏览数量=23}&amp;=p(浏览数量\leqslant23)\times i(t_L) + p(浏览数量&gt;23)\times i(t_R)\\
+   &amp;=\frac{14}{16}\times \left[\frac{7}{14}\times (1-\frac{7}{14})+\frac{2}{14}\times (1-\frac{2}{14})+\frac{5}{14}\times (1-\frac{5}{14})\right]\\
+   &amp;+\frac{2}{16}\times \left[\frac{1}{2}\times (1-\frac{1}{2})+\frac{1}{2}\times (1-\frac{1}{2})\right]\\
+   &amp;=0.5892
+   \end{split}
+\]</span></p>
+<p>​ 取 19 进行分裂时不纯度下降最大 = 0.6328-0.5178=0.1150</p>
+<p>比较四个特征下的不纯度下降值，可以发现第一次分裂时选择 (来源, google) 作为分裂特征效果最好，并将样本分成以下两部分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">t_l = [<span class="number">5</span>, <span class="number">11</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>]</div><div class="line">t_r = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">13</span>]</div></pre></td></tr></table></figure>
+<p>接下来再对左右子树重复上述的步骤直到满足停止条件即可，限于篇幅，这里不再赘述。对应的代码 👉<a href="https://github.com/Cescfangs/ThinkStats-JupyterNotebook/tree/master/DecisionTrees" target="_blank" rel="external">戳这里</a>，你也可以看 <a href="http://www.patricklamle.com/Tutorials/Decision%20tree%20python/tuto_decision%20tree.html" target="_blank" rel="external"><strong>Patrick L. Lê</strong></a> 写的一个详细的教程，把代码和上面讲的对应起来，对于加深理解很有帮助。</p>
 <h5 id="附证明">附证明：</h5>
 <p><span class="math inline">\(R(t) \geq R(t_L) + R(t_R)\)</span></p>
 <p>令节点 <span class="math inline">\(t\)</span> 的多数类是 <span class="math inline">\(j^*\)</span>：</p>
@@ -724,7 +1018,7 @@ R(t)&amp; = p(t)r(t) \\  &amp; \ge p(t)p_Lr(t_L)+p(t)p_Rr(t_R) \\  &amp; = p(t_L
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于决策树"><span class="nav-number">1.</span> <span class="nav-text">关于决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关概念"><span class="nav-number">2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#种一棵决策树"><span class="nav-number">3.</span> <span class="nav-text">种一棵决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理缺失值"><span class="nav-number">4.</span> <span class="nav-text">处理缺失值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝预热"><span class="nav-number">5.</span> <span class="nav-text">剪枝预热</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动手玩一玩"><span class="nav-number">6.</span> <span class="nav-text">动手玩一玩</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#附证明"><span class="nav-number">6.1.</span> <span class="nav-text">附证明：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于决策树"><span class="nav-number">1.</span> <span class="nav-text">关于决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关概念"><span class="nav-number">2.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#种一棵决策树"><span class="nav-number">3.</span> <span class="nav-text">种一棵决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#回归任务"><span class="nav-number">4.</span> <span class="nav-text">回归任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理缺失值"><span class="nav-number">5.</span> <span class="nav-text">处理缺失值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝预热"><span class="nav-number">6.</span> <span class="nav-text">剪枝预热</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一个例子"><span class="nav-number">7.</span> <span class="nav-text">一个例子</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#附证明"><span class="nav-number">7.1.</span> <span class="nav-text">附证明：</span></a></li></ol></li></ol></div>
             
 
           </div>
